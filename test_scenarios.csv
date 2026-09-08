@@ -1,0 +1,11 @@
+customer_id,market,scenario_type,request_date,request
+6,Southeast Asia,predictive_return,09/08/26,"I ordered a CosmicCam 360 on August 28th and it still hasn't arrived — tracking shows it's been delayed. I'm getting worried. Customer ID: 6."
+1,North America,happy_order,09/08/26,"I'd like to buy 2 NovaSpeaker X12 units for my home studio. Please process my order. Customer ID: 1."
+3,Europe,smart_exchange,09/09/26,"I want to return my Nebula Headphones (Order 3) — the sound quality is disappointing. I bought them on August 10th. Customer ID: 3."
+2,East Asia,loyalty_save,09/09/26,"I need to return 1 Nebula Headphones from Order 2 placed on August 1st. I'm worried this might affect my Silver loyalty status. Customer ID: 2."
+9,North America,complaint_recovery,09/10/26,"I posted on Twitter that my GalaxySmart Watch from Cosmic Mart stopped working after 3 days. This is unacceptable for a $300 product! I want a resolution immediately. Customer ID: 9."
+8,Africa,out_of_stock,09/10/26,"I'd like to order 5 LunarLight LED Strips for my apartment. Please process this. Customer ID: 8."
+4,North America,bulk_order,09/11/26,"Our office wants to purchase 15 AstroDock Hubs for our team workstations. Do we get a discount for buying in bulk? Customer ID: 4."
+7,Europe,multi_item_order,09/11/26,"I'd like to order 1 StarPad Pro and 1 AstroDock Hub to set up my new workspace. Customer ID: 7."
+5,South Asia,standard_return,09/12/26,"I want to return the AstroSpeaker X3 I ordered on August 20th (Order 5) — it stopped connecting to Bluetooth after a week. Customer ID: 5."
+10,Middle East,voc_signal,09/12/26,"@CosmicMart my NebulaFit Band display went dark after 2 days. Really disappointed in the quality for the price. #CosmicMartFail. This was posted on Twitter. Customer ID: 10."

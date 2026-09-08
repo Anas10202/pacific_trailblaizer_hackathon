@@ -1,0 +1,188 @@
+scenario_id,request_date,scenario_type,customer_id,market,status,cash_balance,cash_change,inventory_value,response_summary
+1,2026-09-08,predictive_return,6,Southeast Asia,resolved,1446555.02,0.0,4553444.98,"
+✅ DELAYED ORDER CASE RESOLVED - ESCALATION COMPLETE
+
+Customer: Casey Park (ID: 6)
+Product: CosmicCam 360
+Order Date: August 28, 2026
+Report Date: September 8, 2026
+Days Overdue: 11 days
+
+**ACTIONS TAKEN:**
+1. ✅ High-Priority Support Ticket #1 Created
+2. ✅ Negative VOC Signal Logged & Escalated
+3. ✅ Delay Investigation Completed
+
+**COMPENSATION APPROVED:**
+- Expedited 2-day replacement shipment (no cost)
+- 500 loyalty points ($50 credit) awarded immediately
+- Additional 150 points upon ticket resolution
+- Total recovery value: $65 equivalent
+
+**EXPECTED DELIVERY:**
+Replacement unit arriving by"
+2,2026-09-08,happy_order,1,North America,fulfilled,1447055.0,499.98,4552945.0,"
+✅ ORDER SUCCESSFULLY PROCESSED
+
+Order Details:
+- Customer: Alex Rivera (Customer ID: 1)
+- Product: NovaSpeaker X12
+- Quantity: 2 units
+- Order Date: 2026-09-08
+- Fulfillment Date: 2026-09-08 (same-day delivery)
+
+Pricing:
+- Unit Price: $249.99 per unit
+- Subtotal: $499.98 (2 × $249.99)
+- Bulk Discount: None applied (order below 10-unit threshold)
+- Final Total: $499.98
+
+Loyalty Rewards:
+- Loyalty Points Earned: 499 points
+- Updated Loyalty Balance: 6,198 total points
+
+Inventory Status:
+- Stock Verified: 332 units available before order
+- Stock After Order: 330 units remaining
+- Status: Healthy"
+3,2026-09-09,smart_exchange,3,Europe,resolved,1447055.0,0.0,4552945.0,"
+✅ RETURN SUCCESSFULLY PROCESSED
+
+Customer ID: 3 (Jordan Kim)
+Order ID: 3
+Product: Nebula Headphones
+Purchase Date: August 10, 2026
+Return Request Date: September 9, 2026
+Days Since Purchase: 30 days (exactly at the edge of the 30-day return window - APPROVED)
+
+REFUND DETAILS:
+- Full Refund Amount: $149.99
+- Refund Method: Loyalty Points (1,549 points)
+- Goodwill Bonus: 50 points
+- Total Points Credited: 1,549 points
+- Updated Loyalty Balance: 3,398 total points
+- Loyalty Tier: Silver (preserved)
+
+NEXT STEPS:
+1. Return shipping instructions will be sent separately
+2. You will receive refund co"
+4,2026-09-09,loyalty_save,2,East Asia,resolved,1447055.0,0.0,4552945.0,"
+RETURN REQUEST SUMMARY FOR CUSTOMER ID 2 (Sam Chen)
+==================================================
+
+RETURN REQUEST STATUS:
+- Product: Nebula Headphones (Quantity: 1)
+- Order: Order 2 (Order Date: 2026-08-01)
+- Return Request Date: 2026-09-09
+- Days Elapsed: 39 days (exceeds 30-day window by 9 days)
+- Status: INELIGIBLE for automatic processing - HIGH-PRIORITY SUPPORT TICKET (#1) CREATED for manager review
+
+LOYALTY STATUS IMPACT:
+- Current Tier: Silver ✓
+- Current Points: 1,800 points
+- Silver Status After Return: SAFE - Will NOT be downgraded
+- Even with point deductions, customer remains"
+5,2026-09-10,complaint_recovery,9,North America,resolved,1447055.0,0.0,4552945.0,"
+✓ RESOLUTION COMPLETED FOR CUSTOMER ID: 9
+
+Customer: Riley Thompson
+Product: GalaxySmart Watch (Cosmic Mart)
+Issue: Product stopped working after 3 days
+Purchase Price: $300
+
+ACTIONS TAKEN:
+1. VOC Signal Logged from Twitter (high-priority auto-escalation)
+2. Return APPROVED - Well within 30-day return window (only 3 days post-purchase)
+3. Support Ticket #5 Created - URGENT priority level
+4. Loyalty Rewards: 50 points awarded (now at Gold tier with 9,000 total points)
+
+NEXT STEPS FOR CUSTOMER:
+- Fast return label will be generated
+- Expedited processing of defective unit return
+- Goodwill cons"
+6,2026-09-10,out_of_stock,8,Africa,resolved,1447055.0,0.0,4552945.0,"
+✓ ORDER SUCCESSFULLY PROCESSED
+
+Customer: Quinn Johnson (ID: 8)
+Product: LunarLight LED Strips
+Quantity: 5 units
+Order Date: 2026-09-10
+Fulfillment Date: 2026-09-10 (Same-day delivery)
+
+Pricing Breakdown:
+- Unit Price: $39.99 per unit
+- Subtotal: $199.95
+- Bulk Discount: 0% (threshold is 10+ units)
+- Total: $199.95
+
+Loyalty Rewards:
+- Points Earned: 199 points
+- Total Loyalty Points: 848 points
+
+Inventory Status: ✓ Confirmed - Stock available
+Payment Status: Ready for processing
+
+Your order is all set for same-day delivery!
+"
+7,2026-09-11,bulk_order,4,North America,resolved,1447055.0,0.0,4552945.0,"
+YES - A bulk discount IS available for your purchase of 15 AstroDock Hubs!
+
+PRICING BREAKDOWN:
+- Unit Price: $59.99
+- Quantity: 15 units
+- Subtotal (before discount): $899.85
+- Bulk Discount Tier: 5% (for orders of 10-49 units)
+- Discount Amount: $44.99
+- TOTAL COST WITH DISCOUNT: $854.86
+
+SAVINGS: $44.99
+
+Your order has been confirmed for delivery on 2026-09-12, and you've earned 854 loyalty points on this purchase!
+"
+8,2026-09-11,multi_item_order,7,Europe,resolved,1447055.0,0.0,4552945.0,"
+✅ ORDER SUCCESSFULLY PLACED!
+
+Customer ID: 7 (Drew Martinez)
+Order Date: 2026-09-11
+
+Items Ordered:
+1. StarPad Pro (Qty: 1) - $399.99
+2. AstroDock Hub (Qty: 1) - $59.99
+
+Order Total: $459.98
+Loyalty Points Earned: 458 pts
+Customer Loyalty Balance: 2,057 pts
+
+Fulfillment Date: 2026-09-11 (Same-day delivery)
+Status: ✅ COMPLETE - All orders successfully processed and confirmed for fulfillment.
+"
+9,2026-09-12,standard_return,5,South Asia,resolved,1447010.01,-44.99,4552945.0,"
+✓ RETURN REQUEST SUCCESSFULLY PROCESSED
+
+Customer: Morgan Singh (ID: 5)
+Product: AstroSpeaker X3
+Order: #5 (Ordered August 20, 2026)
+Return Request Date: September 12, 2026
+Return Status: APPROVED (within 30-day window - 23 days post-purchase)
+
+Refund Details:
+- Refund Amount: $89.99
+- Refund Method: 949 Loyalty Points (899 base + 50 goodwill bonus)
+- New Loyalty Balance: 8,398 points (Gold Tier maintained)
+
+Return Reason: Bluetooth connectivity failure (warranty defect)
+
+Next Steps: Product return logistics will be arranged to retrieve the defective unit for quality inspection and root cause"
+10,2026-09-12,voc_signal,10,Middle East,resolved,1447010.01,0.0,4552945.0,"
+✅ CUSTOMER COMPLAINT SUCCESSFULLY RESOLVED
+
+**Issue:** Customer ID 10 (Avery Wilson) posted negative review on Twitter about NebulaFit Band display failing after 2 days.
+
+**Actions Taken:**
+1. VOC Signal Logged (ID: #3) - Flagged as negative sentiment requiring auto-escalation
+2. High-Priority Support Ticket Created (#6) - Due to public nature on social media
+3. Return Eligibility Confirmed - Customer is within 30-day window (7 days since purchase)
+4. Smart Exchange Offer Generated:
+   - Return: NebulaFit Band ($79.99)
+   - Upgrade to: GalaxySmart Watch at 15% loyalty discount
+   - Loyalty Be"
