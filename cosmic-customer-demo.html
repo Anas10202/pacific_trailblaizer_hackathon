@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Mart — Returns</title>
+<style>
+  :root{
+    --void:#07060f; --page:#0c0a1a; --panel:#14102a; --panel-2:#1b1636; --edge:#2a2350;
+    --card:#fff; --card-line:#e4e7eb; --card-ink:#0f1111; --card-dim:#565959; --card-soft:#f7f8f8;
+    --violet:#8b2fff; --violet-bright:#a855ff; --violet-soft:#c9a5ff;
+    --mint:#2f9e6f; --mint-bright:#3fd18a; --amber:#f0932b; --rose:#e0405c;
+    --amazon:#ffd814; --amazon-line:#fcd200;
+    --ink:#f4f0ff; --ink-dim:#b3a9d6; --ink-faint:#7d739f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1000px 600px at 85% -10%, #1a1240 0%, transparent 55%),
+      radial-gradient(800px 500px at -10% 110%, #12203f 0%, transparent 50%),
+      var(--void);
+    color:var(--ink); min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; padding:26px 16px 40px;
+  }
+  .stars{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
+  .stars::before{content:""; position:absolute; inset:0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%,#fff,transparent),
+      radial-gradient(1px 1px at 60% 70%,#cbb8ff,transparent),
+      radial-gradient(1px 1px at 80% 20%,#fff,transparent),
+      radial-gradient(1px 1px at 40% 85%,#9fd8ff,transparent),
+      radial-gradient(1px 1px at 92% 55%,#fff,transparent),
+      radial-gradient(1px 1px at 12% 92%,#d8c6ff,transparent),
+      radial-gradient(1px 1px at 33% 12%,#fff,transparent);}
+
+  .head{position:relative; z-index:1; display:flex; align-items:center; gap:12px; margin-bottom:8px;}
+  .logo{width:40px; height:40px; border-radius:50%; border:2.5px solid var(--violet); display:grid; place-items:center; background:#000;}
+  .logo::before{content:""; width:17px; height:17px; border-radius:50%; background:var(--violet-bright); box-shadow:-12px 0 0 -3px var(--violet-bright),12px 0 0 -2px var(--violet-bright);}
+  .head .bn{font-weight:800; letter-spacing:2.5px; font-size:17px;}
+  .head .bn small{display:block; font-size:9.5px; letter-spacing:2px; color:var(--ink-faint); font-weight:600;}
+  .sub{position:relative; z-index:1; font-size:12.5px; color:var(--ink-faint); margin-bottom:20px;}
+  .reset{position:relative; z-index:1; margin-bottom:18px; font-size:12px; color:var(--ink-faint); background:transparent; border:1px solid var(--edge); border-radius:8px; padding:7px 14px; cursor:pointer; transition:.15s;}
+  .reset:hover{border-color:var(--violet-bright); color:var(--ink);}
+
+  /* phone */
+  .phone-frame{position:relative; z-index:1; width:410px; max-width:100%; background:#000; border-radius:38px; padding:12px; box-shadow:0 34px 90px -28px rgba(139,47,255,0.6); border:1px solid var(--edge);}
+  .phone{background:var(--page); border-radius:28px; overflow:hidden; height:680px; display:flex; flex-direction:column; position:relative;}
+  .notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:135px; height:26px; background:#000; border-radius:0 0 17px 17px; z-index:5;}
+  .app-top{padding:22px 18px 14px; display:flex; align-items:center; gap:11px; border-bottom:1px solid var(--edge); background:rgba(139,47,255,0.07);}
+  .app-top .logo{width:30px; height:30px; border-width:2px;} .app-top .logo::before{width:12px; height:12px; box-shadow:-8px 0 0 -2px var(--violet-bright),8px 0 0 -2px var(--violet-bright);}
+  .app-top .at{font-weight:800; letter-spacing:1.5px; font-size:13px;}
+  .app-top .grow{flex:1;}
+  .app-top .gph{width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#3a2d6b,#5a3fa0); display:grid; place-items:center; font-weight:800; font-size:12px;}
+  .app-body{flex:1; overflow-y:auto; padding:16px;}
+  .app-body::-webkit-scrollbar{width:5px;} .app-body::-webkit-scrollbar-thumb{background:var(--edge); border-radius:6px;}
+
+  .greeting{font-size:15.5px; font-weight:700;} .greeting small{display:block; font-size:12px; color:var(--ink-faint); font-weight:500; margin-top:2px;}
+  .tabs{display:flex; gap:8px; margin:14px 0;}
+  .tab{flex:1; text-align:center; font-size:12px; font-weight:700; padding:8px; border-radius:9px; background:var(--panel-2); border:1px solid var(--edge); color:var(--ink-dim);}
+  .tab.active{background:linear-gradient(135deg,var(--violet),var(--violet-bright)); color:#fff; border-color:transparent;}
+
+  .wcard{background:var(--card); color:var(--card-ink); border-radius:13px; padding:14px; margin-bottom:12px; box-shadow:0 8px 22px -12px rgba(0,0,0,0.5);}
+  .oprod{display:flex; gap:12px;}
+  .opimg{width:64px; height:64px; border-radius:9px; display:grid; place-items:center; font-size:30px; flex-shrink:0; background:linear-gradient(135deg,#ede4ff,#dcc9ff);}
+  .opn{font-size:14px; font-weight:600; line-height:1.3;}
+  .opm{font-size:11.5px; color:var(--card-dim); margin-top:3px;}
+  .opp{font-size:14px; font-weight:700; margin-top:4px;}
+  .ostat{font-size:11px; color:var(--mint); font-weight:700; margin-top:6px;}
+  .ret-btn{margin-top:12px; width:100%; padding:11px; border:0; border-radius:9px; background:var(--amazon); border:1px solid var(--amazon-line); font-weight:800; font-size:13.5px; cursor:pointer; color:#0f1111; transition:.15s;}
+  .ret-btn:hover{background:#f7ca00;}
+  .ret-btn:disabled{background:var(--card-line); border-color:var(--card-line); color:var(--card-dim); cursor:not-allowed;}
+  .pill{display:inline-block; font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:20px; margin-top:6px;}
+  .pill.done{background:#e3f5ec; color:var(--mint);}
+  .pill.warn{background:#fdeee0; color:var(--amber);}
+
+  .step-label{font-size:12px; color:var(--card-dim); font-weight:700; margin-bottom:10px;}
+  .back-link{font-size:12.5px; color:var(--violet-soft); cursor:pointer; margin-bottom:12px; display:inline-block; font-weight:600;}
+  .reason{display:flex; align-items:center; gap:10px; padding:12px 13px; border:1px solid var(--card-line); border-radius:10px; margin-bottom:9px; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--card-ink); transition:.15s; background:#fff;}
+  .reason:hover{border-color:var(--violet);}
+  .reason.sel{border-color:var(--violet); background:#f5efff; box-shadow:0 0 0 2px rgba(139,47,255,0.15);}
+  .reason .rdot{width:17px; height:17px; border-radius:50%; border:2px solid var(--card-line); flex-shrink:0;}
+  .reason.sel .rdot{border-color:var(--violet); background:var(--violet); box-shadow:inset 0 0 0 3px #fff;}
+
+  .desc-field{width:100%; min-height:100px; border:1px solid var(--card-line); border-radius:10px; padding:12px; font-size:13px; font-family:inherit; resize:none; color:var(--card-ink); line-height:1.5; background:#fff;}
+  .desc-field:focus{outline:none; border-color:var(--violet);}
+  .submit-btn{margin-top:12px; width:100%; padding:13px; border:0; border-radius:10px; background:linear-gradient(135deg,var(--violet),var(--violet-bright)); color:#fff; font-weight:800; font-size:14px; cursor:pointer;}
+  .submit-btn:disabled{opacity:.5; cursor:not-allowed;}
+
+  .processing{text-align:center; padding:24px 10px;}
+  .spinner{width:52px; height:52px; margin:0 auto 18px; border-radius:50%; border:4px solid var(--edge); border-top-color:var(--violet-bright); animation:spin 0.9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .proc-head{font-size:14.5px; font-weight:700; margin-bottom:16px;}
+  .proc-sub{font-size:11px; color:var(--ink-faint); margin-bottom:16px;}
+  .proc-line{font-size:12.5px; color:var(--ink-dim); padding:7px 10px; text-align:left; display:flex; gap:9px; align-items:flex-start; opacity:0; transform:translateY(6px);}
+  .proc-line.on{opacity:1; transform:none; transition:.3s;}
+  .proc-line .pc{color:var(--violet-soft); font-weight:800; flex-shrink:0;}
+  .proc-line b{color:var(--violet-soft);}
+  .proc-line.decide{color:var(--amber); font-weight:700;} .proc-line.decide .pc{color:var(--amber);}
+  .proc-line.decide.ok{color:var(--mint); font-weight:700;} .proc-line.decide.ok .pc{color:var(--mint);}
+  .proc-line.decide.bad{color:var(--rose); font-weight:700;} .proc-line.decide.bad .pc{color:var(--rose);}
+
+  .confirm-msg{background:var(--card); color:var(--card-ink); border-radius:13px; padding:17px; box-shadow:0 8px 22px -12px rgba(0,0,0,0.5);}
+  .confirm-msg .ci{width:46px; height:46px; border-radius:50%; background:#e3f5ec; display:grid; place-items:center; font-size:23px; margin-bottom:13px;}
+  .confirm-msg.warn .ci{background:#fdeee0;} .confirm-msg.bad .ci{background:#fbe4e4;}
+  .confirm-msg .ch{font-size:15.5px; font-weight:700; margin-bottom:9px;}
+  .confirm-msg .cb{font-size:13px; color:var(--card-dim); line-height:1.6;}
+  .confirm-msg .cb b{color:var(--card-ink);}
+  .ai-note{margin-top:13px; padding:12px 13px; border-radius:10px; background:var(--card-soft); font-size:11.5px; color:var(--card-dim); line-height:1.6; border-left:3px solid var(--violet);}
+  .ai-note b{color:var(--card-ink);}
+  .named{margin-top:13px; padding:12px; border-radius:10px; background:#f5efff; display:flex; align-items:center; gap:11px;}
+  .named .nph{width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--violet),var(--violet-bright)); display:grid; place-items:center; font-weight:800; color:#fff; font-size:14px; flex-shrink:0;}
+  .named .nn{font-size:13.5px; font-weight:700;} .named .nt{font-size:11.5px; color:var(--card-dim);}
+  .live-tag{margin-top:14px; text-align:center; font-size:11.5px; color:var(--mint); font-weight:700; line-height:1.5;}
+
+  .fade{display:none;} .fade.show{display:block; animation:fadeIn .35s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+
+  .empty-state{text-align:center; padding:40px 14px; color:var(--ink-faint); font-size:13px; line-height:1.6;}
+  .err-box{background:#2a1420; border:1px solid var(--rose); color:#ffd0d8; border-radius:10px; padding:13px; font-size:12px; line-height:1.6;}
+  .err-box code{background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:5px;}
+  .skel{background:var(--panel-2); border-radius:13px; height:96px; margin-bottom:12px; animation:pulse 1.3s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:.5;} 50%{opacity:.9;}}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+
+<div class="head">
+  <div class="logo"></div>
+  <div class="bn">COSMIC MART<small>AGENTIC RETURNS · CUSTOMER APP</small></div>
+</div>
+<div class="sub" id="subline">Loading account… · a return that reasons, not just processes</div>
+<button class="reset" onclick="location.reload()">↺ Reset demo</button>
+
+<div class="phone-frame">
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="app-top">
+      <div class="logo"></div>
+      <div class="at">COSMIC MART</div>
+      <div class="grow"></div>
+      <div class="gph" id="avatarInitials">··</div>
+    </div>
+    <div class="app-body" id="appBody">
+
+      <!-- HOME -->
+      <div class="fade show" id="m-home">
+        <div class="greeting" id="greeting">Hi there 👋<small>Loading your account…</small></div>
+        <div class="tabs"><div class="tab">Home</div><div class="tab active">Orders</div><div class="tab">Account</div></div>
+        <div class="step-label">RECENT ORDERS</div>
+        <div id="orderList">
+          <div class="skel"></div>
+          <div class="skel"></div>
+        </div>
+      </div>
+
+      <!-- REASON -->
+      <div class="fade" id="m-reason">
+        <span class="back-link" onclick="go('m-home')">← Back</span>
+        <div class="step-label" id="reasonItem">STEP 1 OF 2 · Why are you returning this?</div>
+        <div id="reasonList"></div>
+      </div>
+
+      <!-- DESCRIBE -->
+      <div class="fade" id="m-desc">
+        <span class="back-link" onclick="go('m-reason')">← Back</span>
+        <div class="step-label">STEP 2 OF 2 · Tell us what happened</div>
+        <textarea class="desc-field" id="descText" placeholder="Add a few details — this goes straight to the return policy agent…"></textarea>
+        <button class="submit-btn" id="submitBtn" onclick="submitReturn()">Submit return request</button>
+      </div>
+
+      <!-- PROCESSING -->
+      <div class="fade" id="m-proc">
+        <div class="processing">
+          <div class="spinner"></div>
+          <div class="proc-head">The policy agent is reviewing your request</div>
+          <div class="proc-sub">This calls a real AI policy check — it can take a few seconds.</div>
+          <div id="procLines"></div>
+        </div>
+      </div>
+
+      <!-- SUCCESS (approved) -->
+      <div class="fade" id="m-success">
+        <div class="confirm-msg">
+          <div class="ci">✓</div>
+          <div class="ch">Return approved</div>
+          <div class="cb" id="successBody"></div>
+          <div class="ai-note" id="successNote"></div>
+        </div>
+        <div class="live-tag" style="color:var(--violet-soft);">Evaluated end-to-end by the return policy agent — no queue, no ticket number to wait on.</div>
+      </div>
+
+      <!-- CONFIRM (flagged — routed to a human team) -->
+      <div class="fade" id="m-confirm">
+        <div class="confirm-msg warn">
+          <div class="ci">👀</div>
+          <div class="ch" id="confirmHead">Your return needs a closer look</div>
+          <div class="cb" id="confirmBody"></div>
+          <div class="ai-note" id="confirmNote"></div>
+          <div class="named" id="confirmNamed"></div>
+        </div>
+        <div class="live-tag">Routed by the agent, not rejected — a specialist will follow up.</div>
+      </div>
+
+      <!-- DECLINED -->
+      <div class="fade" id="m-declined">
+        <div class="confirm-msg bad">
+          <div class="ci">✕</div>
+          <div class="ch">This return can't be approved</div>
+          <div class="cb" id="declinedBody"></div>
+          <div class="ai-note" id="declinedNote"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================================================================
+   This app is wired to the real Cosmic Mart backend (api.py +
+   customer_api.py). Submitting a return writes straight into the same
+   `returns` table the internal Return Management dashboard reads, and
+   runs through the exact same real policy-agent evaluation the
+   dashboard's own demo returns use — so approve/flag/decline decisions
+   here are genuine, not scripted.
+   =================================================================== */
+const API = 'http://localhost:8000';
+const CUSTOMER_ID = 1;
+
+const ICONS = {
+  audio:'🔊', eyewear:'🥽', tablet:'📱', camera:'📷',
+  lighting:'💡', wearable:'⌚', accessory:'🔌',
+};
+const REASONS = [
+  'Changed my mind', 'Ordered by mistake', 'Better price elsewhere', 'No longer needed',
+  'Does not match description', 'Compatibility issue', 'Damaged on arrival', 'Other',
+];
+const WAIT_LINES = [
+  'Reading your order and account history…',
+  "Checking against Cosmic Mart's return policy…",
+  'Cross-referencing recent reports for this product…',
+  'Consulting the return policy agent…',
+];
+
+let orders = [];
+let customer = null;
+let currentItem = null;
+let lastResult = null;
+
+function go(id){
+  document.querySelectorAll('#appBody .fade').forEach(el=>el.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+  document.getElementById('appBody').scrollTop = 0;
+}
+
+function initials(name){
+  return (name || '?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+}
+
+async function loadHome(){
+  try{
+    const [profileRes, ordersRes] = await Promise.all([
+      fetch(`${API}/api/customer/${CUSTOMER_ID}`),
+      fetch(`${API}/api/customer/${CUSTOMER_ID}/orders`),
+    ]);
+    if(!profileRes.ok || !ordersRes.ok) throw new Error('backend responded with an error');
+    customer = await profileRes.json();
+    orders = await ordersRes.json();
+    renderHome();
+  }catch(err){
+    renderError(err);
+  }
+}
+
+function renderHome(){
+  const tierBit = customer.loyalty_tier ? ` · ${customer.loyalty_tier} member` : '';
+  document.getElementById('subline').textContent =
+    `${customer.name} · Cosmic Mart${tierBit} · a return that reasons, not just processes`;
+  document.getElementById('avatarInitials').textContent = initials(customer.name);
+  document.getElementById('greeting').innerHTML =
+    `Hi ${customer.name.split(' ')[0]} 👋<small>${customer.market}${tierBit}</small>`;
+
+  const list = document.getElementById('orderList');
+  list.innerHTML = '';
+  if(orders.length === 0){
+    list.innerHTML = '<div class="empty-state">No delivered orders on file yet.</div>';
+    return;
+  }
+  orders.forEach(item=>{
+    const card = document.createElement('div');
+    card.className = 'wcard';
+    const icon = ICONS[item.category] || '🔌';
+    let statusLine = `● Delivered · Order #CM-${90000 + item.order_id}`;
+    let btn;
+    if(item.already_returned){
+      btn = `<span class="pill done">Return submitted</span>`;
+    } else {
+      const warn = item.eligible ? '' : `<div><span class="pill warn">Past our 30-day policy window — the agent will still review it</span></div>`;
+      btn = `${warn}<button class="ret-btn" onclick='startReturn(${item.order_id}, ${JSON.stringify(item.product_name)})'>Return item</button>`;
+    }
+    card.innerHTML = `
+      <div class="oprod">
+        <div class="opimg">${icon}</div>
+        <div>
+          <div class="opn">${item.product_name}</div>
+          <div class="opm">${item.category} · Delivered ${item.days_ago} day(s) ago</div>
+          <div class="opp">$${item.total_price.toFixed(2)}</div>
+          <div class="ostat">${statusLine}</div>
+        </div>
+      </div>
+      ${btn}`;
+    list.appendChild(card);
+  });
+}
+
+function renderError(err){
+  document.getElementById('orderList').innerHTML = `
+    <div class="err-box">
+      Can't reach the Cosmic Mart backend at <code>${API}</code>.<br><br>
+      Start it with <code>uvicorn api:app --reload</code> from the project root, then
+      <span style="text-decoration:underline; cursor:pointer;" onclick="location.reload()">reset the demo</span>.
+      <br><br><span style="opacity:.7;">${err.message}</span>
+    </div>`;
+}
+
+function startReturn(orderId, productName){
+  currentItem = orders.find(o => o.order_id === orderId && o.product_name === productName);
+  if(!currentItem) return;
+  document.getElementById('reasonItem').textContent =
+    `STEP 1 OF 2 · Why are you returning the ${currentItem.product_name}?`;
+  const list = document.getElementById('reasonList');
+  list.innerHTML = '';
+  REASONS.forEach(r=>{
+    const d = document.createElement('div');
+    d.className = 'reason';
+    d.innerHTML = '<div class="rdot"></div>'+r;
+    d.onclick = ()=>selReason(d, r);
+    list.appendChild(d);
+  });
+  go('m-reason');
+}
+
+let selectedReason = null;
+function selReason(el, reason){
+  document.querySelectorAll('#m-reason .reason').forEach(r=>r.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedReason = reason;
+  document.getElementById('descText').value = '';
+  setTimeout(()=>go('m-desc'), 350);
+}
+
+function addProcLine(text, cls){
+  const box = document.getElementById('procLines');
+  const d = document.createElement('div');
+  d.className = 'proc-line on' + (cls ? ' '+cls : '');
+  const icon = cls === 'decide ok' ? '✓' : cls === 'decide bad' ? '✕' : cls === 'decide' ? '▶' : '…';
+  d.innerHTML = `<span class="pc">${icon}</span><span>${text}</span>`;
+  box.appendChild(d);
+  return d;
+}
+
+function decisionLabel(decision){
+  if(decision === 'approved') return { text: 'Decision: approve automatically', cls: 'decide ok' };
+  if(decision === 'flagged') return { text: 'Decision: route to a specialist team for review', cls: 'decide' };
+  if(decision === 'declined') return { text: 'Decision: decline per policy', cls: 'decide bad' };
+  return { text: 'Decision: escalate — review agent unavailable', cls: 'decide' };
+}
+
+async function submitReturn(){
+  const description = document.getElementById('descText').value.trim();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  go('m-proc');
+  const box = document.getElementById('procLines');
+  box.innerHTML = '';
+
+  let i = 0;
+  let currentLine = addProcLine(WAIT_LINES[0]);
+  const rotator = setInterval(()=>{
+    i = (i+1) % WAIT_LINES.length;
+    currentLine.remove();
+    currentLine = addProcLine(WAIT_LINES[i]);
+  }, 1500);
+
+  try{
+    const res = await fetch(`${API}/api/customer/return`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        order_id: currentItem.order_id,
+        product_name: currentItem.product_name,
+        reason: selectedReason,
+        description,
+      }),
+    });
+    clearInterval(rotator);
+    currentLine.remove();
+    if(!res.ok){
+      const detail = await res.json().catch(()=>({}));
+      throw new Error(detail.detail || `request failed (${res.status})`);
+    }
+    lastResult = await res.json();
+    const { text, cls } = decisionLabel(lastResult.decision);
+    addProcLine(text, cls);
+    setTimeout(()=>showOutcome(lastResult), 900);
+  }catch(err){
+    clearInterval(rotator);
+    addProcLine(`Something went wrong: ${err.message}`, 'decide bad');
+    btn.disabled = false;
+  }
+}
+
+function showOutcome(result){
+  document.getElementById('submitBtn').disabled = false;
+  const item = orders.find(o => o.order_id === result.order_id && o.product_name === result.product);
+  if(item) item.already_returned = true;
+
+  if(result.decision === 'approved'){
+    document.getElementById('successBody').innerHTML =
+      `Your return for the <b>${result.product}</b> is all set. <b>$${result.refund_amount.toFixed(2)}</b> will be refunded.`;
+    document.getElementById('successNote').innerHTML = `<b>Agent note:</b> ${result.ai_note}`;
+    go('m-success');
+  } else if(result.decision === 'flagged'){
+    const team = result.escalation_team || result.assigned_to || 'a specialist team';
+    document.getElementById('confirmHead').textContent = 'Your return needs a closer look';
+    document.getElementById('confirmBody').innerHTML =
+      `Hi ${customer.name.split(' ')[0]}, before we can refund the <b>${result.product}</b>, this has been routed to ` +
+      `<b>${team}</b> for review. This is now <b>return #${result.return_id}</b> — a specialist will follow up.`;
+    document.getElementById('confirmNote').innerHTML = `<b>Agent note:</b> ${result.ai_note}`;
+    document.getElementById('confirmNamed').innerHTML =
+      `<div class="nph">${initials(team)}</div><div><div class="nn">${team}</div><div class="nt">Cosmic Mart Return Review</div></div>`;
+    go('m-confirm');
+  } else if(result.decision === 'declined'){
+    document.getElementById('declinedBody').innerHTML =
+      `We can't approve the return for your <b>${result.product}</b> as submitted.`;
+    document.getElementById('declinedNote').innerHTML = `<b>Why:</b> ${result.ai_note}`;
+    go('m-declined');
+  } else {
+    // agent unavailable — degrade to the same "needs a closer look" screen, no chat
+    document.getElementById('confirmHead').textContent = "We couldn't finish reviewing this automatically";
+    document.getElementById('confirmBody').innerHTML =
+      `Hi ${customer.name.split(' ')[0]}, the review agent didn't respond in time for the <b>${result.product}</b> return. ` +
+      `A specialist will follow up on <b>return #${result.return_id}</b>.`;
+    document.getElementById('confirmNote').innerHTML = `<b>Agent note:</b> ${result.ai_note}`;
+    document.getElementById('confirmNamed').innerHTML = '';
+    go('m-confirm');
+  }
+}
+
+loadHome();
+</script>
+</body>
+</html>

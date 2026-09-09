@@ -6,9 +6,12 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+from customer_api import router as customer_router
+
 DB = Path(__file__).parent / "cosmic_mart.db"
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.include_router(customer_router)
 
 # ── DB helpers ────────────────────────────────────────────────────────────────
 
