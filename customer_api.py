@@ -28,6 +28,23 @@ DB = Path(__file__).parent / "cosmic_mart.db"
 RETURN_WINDOW_DAYS = 30
 CUSTOMER_APP_ORDER_BASE = 9500
 
+# The customer app always shows this one demo persona. Each time their orders are
+# loaded (i.e. each time the page is opened/refreshed), any return they previously
+# submitted through the app is cleared first, so the same 3 purchases are always
+# there with the return option available for the next demo run. This never touches
+# other customers' returns or the dashboard's own seeded/system returns.
+DEMO_CUSTOMER_ID = 1
+
+
+def _reset_demo_customer_returns():
+    conn = sqlite3.connect(DB)
+    conn.execute(
+        "DELETE FROM returns WHERE customer_id = ? AND order_id >= ?",
+        (DEMO_CUSTOMER_ID, CUSTOMER_APP_ORDER_BASE),
+    )
+    conn.commit()
+    conn.close()
+
 
 @router.get("/{customer_id}")
 def get_customer(customer_id: int):
@@ -42,6 +59,9 @@ def get_customer(customer_id: int):
 @router.get("/{customer_id}/orders")
 def get_customer_orders(customer_id: int):
     from cosmic_mart import db_engine, cosmic_products
+
+    if customer_id == DEMO_CUSTOMER_ID:
+        _reset_demo_customer_returns()
 
     category_map = {p["product_name"]: p["category"] for p in cosmic_products}
     rows = pd.read_sql(
