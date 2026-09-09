@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import KPICard from '../components/KPICard'
 import Card from '../components/Card'
-import { fetchOverview, fetchFinancials } from '../api'
+import { fetchOverview, fetchFinancials, fetchInsights, fetchAgenticInsights } from '../api'
 
 const TIER_COLOR = { Gold: '#ffd166', Silver: '#b0b7c3', Basic: '#7b82a0' }
 const ACCENT = ['#00d4aa', '#7c6fff', '#ff6b9d']
@@ -10,9 +10,22 @@ const ACCENT = ['#00d4aa', '#7c6fff', '#ff6b9d']
 export default function Overview() {
   const [data, setData] = useState(null)
   const [txns, setTxns] = useState([])
+  const [insights, setInsights] = useState(null)
+  const [agentic, setAgentic] = useState(null)
+  const [agenticLoading, setAgenticLoading] = useState(true)
+
+  const loadAgentic = (refresh = false) => {
+    setAgenticLoading(true)
+    fetchAgenticInsights(refresh)
+      .then(setAgentic)
+      .catch(() => setAgentic({ text: 'Could not reach the agent. Is the API running with an ANTHROPIC_API_KEY?' }))
+      .finally(() => setAgenticLoading(false))
+  }
 
   useEffect(() => {
     fetchOverview().then(setData)
+    fetchInsights().then(setInsights)
+    loadAgentic()
     fetchFinancials().then(rows => {
       const sales = rows.filter(r => r.transaction_type === 'sales' && r.product_name)
       const byProduct = {}
@@ -139,6 +152,109 @@ export default function Overview() {
           <div style={{ fontSize: 10, color: '#7b82a0', marginTop: 4 }}>SQLite · SQLAlchemy · pandas</div>
         </Card>
       </div>
+
+      {insights && (
+        <Card title="Merchandising Insights — Recommended Actions" style={{ marginTop: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <RecColumn
+              heading="Push These Products"
+              caption="Best sellers — feature them and keep stock high"
+              accent="#00d4aa"
+              icon="📈"
+              items={insights.promote}
+              empty="No sales yet to rank winners."
+            />
+            <RecColumn
+              heading="Mark These Down"
+              caption="Overstocked slow movers — free up tied-up cash"
+              accent="#ffd166"
+              icon="🏷️"
+              items={insights.markdown}
+              empty="No markdown candidates — inventory is moving."
+            />
+          </div>
+        </Card>
+      )}
+
+      <Card style={{ marginTop: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 15 }}>🤖</span>
+            <span style={{ fontSize: 10, fontWeight: 600, color: '#7b82a0', textTransform: 'uppercase', letterSpacing: '.8px' }}>
+              AI Merchandising Recommendation
+            </span>
+            <span style={{ fontSize: 9, fontWeight: 700, color: '#7c6fff', background: '#7c6fff1a', padding: '2px 8px', borderRadius: 20 }}>
+              analytics_agent
+            </span>
+          </div>
+          <button
+            onClick={() => loadAgentic(true)}
+            disabled={agenticLoading}
+            style={{
+              fontSize: 11, fontWeight: 600, color: '#7c6fff', background: 'transparent',
+              border: '1px solid #2a2d40', borderRadius: 8, padding: '5px 12px',
+              cursor: agenticLoading ? 'default' : 'pointer', opacity: agenticLoading ? 0.5 : 1,
+            }}
+          >
+            {agenticLoading ? 'Thinking…' : '↻ Regenerate'}
+          </button>
+        </div>
+
+        {agenticLoading ? (
+          <div style={{ color: '#7b82a0', fontSize: 13, padding: '8px 0' }}>
+            Agent is analyzing inventory &amp; sales… this can take a few seconds.
+          </div>
+        ) : (
+          <div style={{ fontSize: 13, lineHeight: 1.6, whiteSpace: 'pre-wrap', color: '#d8dbe8' }}>
+            {renderBold(agentic?.text)}
+          </div>
+        )}
+
+        {agentic?.generated_at && !agenticLoading && (
+          <div style={{ fontSize: 10, color: '#7b82a0', marginTop: 12 }}>
+            Generated {new Date(agentic.generated_at).toLocaleString()} · cached until regenerated
+          </div>
+        )}
+      </Card>
+    </div>
+  )
+}
+
+function renderBold(text) {
+  if (!text) return null
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith('**') && part.endsWith('**')
+      ? <strong key={i}>{part.slice(2, -2)}</strong>
+      : part
+  )
+}
+
+function RecColumn({ heading, caption, accent, icon, items, empty }) {
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+        <span style={{ fontSize: 15 }}>{icon}</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: accent }}>{heading}</span>
+      </div>
+      <div style={{ fontSize: 11, color: '#7b82a0', marginBottom: 12 }}>{caption}</div>
+      {(!items || items.length === 0) ? (
+        <div style={{ fontSize: 12, color: '#7b82a0', padding: '12px 0' }}>{empty}</div>
+      ) : items.map(p => (
+        <div key={p.product} style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          gap: 12, padding: '10px 12px', marginBottom: 8,
+          background: '#141726', border: '1px solid #2a2d40', borderLeft: `3px solid ${accent}`, borderRadius: 8,
+        }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.product}</div>
+            <div style={{ fontSize: 10, color: '#7b82a0', marginTop: 2 }}>{p.reason}</div>
+          </div>
+          <span style={{
+            flexShrink: 0, padding: '4px 10px', borderRadius: 20, fontSize: 10, fontWeight: 700,
+            color: accent, background: `${accent}1a`, whiteSpace: 'nowrap',
+          }}>{p.action}</span>
+        </div>
+      ))}
     </div>
   )
 }

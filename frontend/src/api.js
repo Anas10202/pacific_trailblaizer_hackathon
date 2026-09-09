@@ -6,3 +6,6 @@ export const fetchScenarios = () => fetch(`${BASE}/api/scenarios`).then(r => r.j
 export const fetchInventory = () => fetch(`${BASE}/api/inventory`).then(r => r.json())
 export const fetchVOC = () => fetch(`${BASE}/api/voc`).then(r => r.json())
 export const fetchFinancials = () => fetch(`${BASE}/api/financials`).then(r => r.json())
+export const fetchInsights = () => fetch(`${BASE}/api/insights`).then(r => r.json())
+export const fetchAgenticInsights = (refresh = false) =>
+  fetch(`${BASE}/api/insights/agentic${refresh ? '?refresh=true' : ''}`).then(r => r.json())
