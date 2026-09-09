@@ -9,3 +9,13 @@ export const fetchFinancials = () => fetch(`${BASE}/api/financials`).then(r => r
 export const fetchInsights = () => fetch(`${BASE}/api/insights`).then(r => r.json())
 export const fetchAgenticInsights = (refresh = false) =>
   fetch(`${BASE}/api/insights/agentic${refresh ? '?refresh=true' : ''}`).then(r => r.json())
+export const fetchReturns = () => fetch(`${BASE}/api/returns`).then(r => r.json())
+export const fetchCustomerDetail = (id) => fetch(`${BASE}/api/customers/${id}`).then(r => r.json())
+export const reEvaluateReturns = () => fetch(`${BASE}/api/returns/re-evaluate`, { method: 'POST' }).then(r => r.json())
+export const fetchMessageCounts = () => fetch(`${BASE}/api/returns/message-counts`).then(r => r.json())
+export const fetchMessages = (returnId) => fetch(`${BASE}/api/returns/${returnId}/messages`).then(r => r.json())
+export const sendMessage = (returnId, message) => fetch(`${BASE}/api/returns/${returnId}/messages`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ message }),
+}).then(r => r.json())
