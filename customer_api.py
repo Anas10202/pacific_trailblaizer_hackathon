@@ -58,7 +58,7 @@ def get_customer(customer_id: int):
 
 @router.get("/{customer_id}/orders")
 def get_customer_orders(customer_id: int):
-    from cosmic_mart import db_engine, cosmic_products
+    from cosmic_mart import db_engine, cosmic_products, estimate_delivered_date
 
     if customer_id == DEMO_CUSTOMER_ID:
         _reset_demo_customer_returns()
@@ -84,8 +84,11 @@ def get_customer_orders(customer_id: int):
     today = datetime.now()
     items = []
     for _, r in rows.iterrows():
-        order_date = datetime.fromisoformat(r["order_date"])
-        days_ago = (today - order_date).days
+        # Return window is 30 days from delivery, not from order placement — there's
+        # no delivery_date column, so we estimate it with the same fixed lead time
+        # the policy agent uses (see cosmic_mart.estimate_delivered_date).
+        delivered_date = datetime.fromisoformat(estimate_delivered_date(r["order_date"]))
+        days_ago = (today - delivered_date).days
         synthetic_id = CUSTOMER_APP_ORDER_BASE + int(r["order_id"])
         items.append({
             "order_id": int(r["order_id"]),
@@ -171,7 +174,10 @@ def submit_return(req: ReturnRequest):
     return {
         "return_id": return_id,
         "decision": decision["status"],
-        "ai_note": decision["ai_note"],
+        # Customer-facing note is deliberately the short, plain-language
+        # customer_message — not the internal ai_note (policy citations, team
+        # names, raw error detail) that the Return Management dashboard shows.
+        "ai_note": decision.get("customer_message") or decision["ai_note"],
         "assigned_to": decision["assigned_to"],
         "escalation_team": decision["escalation_team"],
         "product": resolved_product,

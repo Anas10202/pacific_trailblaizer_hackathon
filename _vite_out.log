@@ -1,0 +1,41 @@
+
+> frontend@0.0.0 dev
+> vite
+
+
+  VITE v8.2.2  ready in 2655 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+12:26:06 PM [vite] (client) hmr update /src/index.css
+12:26:06 PM [vite] (client) hmr update /src/index.css
+12:26:09 PM [vite] (client) page reload index.html
+12:26:24 PM [vite] (client) hmr update /src/App.jsx
+12:27:00 PM [vite] (client) hmr update /src/pages/Overview.jsx
+12:27:03 PM [vite] (client) hmr update /src/pages/Overview.jsx
+12:27:08 PM [vite] (client) hmr update /src/pages/Overview.jsx
+12:27:12 PM [vite] (client) hmr update /src/pages/Overview.jsx
+12:27:15 PM [vite] (client) hmr update /src/pages/Overview.jsx
+12:27:19 PM [vite] (client) hmr update /src/pages/Overview.jsx
+12:27:22 PM [vite] (client) hmr update /src/pages/Overview.jsx
+12:27:25 PM [vite] (client) hmr update /src/pages/Overview.jsx
+12:27:29 PM [vite] (client) hmr update /src/pages/Overview.jsx
+1:02:13 PM [vite] (client) page reload index.html
+1:02:13 PM [vite] (client) page reload index.html
+1:02:16 PM [vite] (client) hmr update /src/App.jsx, /src/pages/Overview.jsx
+1:02:22 PM [vite] (client) hmr update /src/index.css
+1:13:58 PM [vite] (client) hmr update /src/App.jsx, /src/pages/Overview.jsx
+1:14:38 PM [vite] (client) hmr update /src/App.jsx
+1:15:11 PM [vite] (client) hmr update /src/pages/Overview.jsx
+1:16:16 PM [vite] (client) hmr update /src/pages/Overview.jsx
+1:16:52 PM [vite] (client) hmr update /src/pages/Overview.jsx
+1:17:29 PM [vite] (client) hmr update /src/pages/Overview.jsx
+1:18:23 PM [vite] (client) hmr update /src/index.css
+1:19:58 PM [vite] (client) hmr update /src/App.jsx, /src/pages/Overview.jsx
+1:20:03 PM [vite] (client) hmr update /src/index.css
+1:20:16 PM [vite] (client) hmr update /src/App.jsx
+1:20:27 PM [vite] (client) hmr update /src/App.jsx, /src/pages/Overview.jsx
+1:21:20 PM [vite] (client) hmr update /src/App.jsx, /src/pages/Overview.jsx
+1:21:26 PM [vite] (client) hmr update /src/index.css
+1:21:34 PM [vite] (client) hmr update /src/App.jsx
+1:23:08 PM [vite] (client) hmr update /src/pages/Overview.jsx

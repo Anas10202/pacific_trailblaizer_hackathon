@@ -1,5 +1,39 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { fetchReturns, fetchCustomerDetail, reEvaluateReturns, fetchMessages, sendMessage, fetchMessageCounts } from '../api'
+import { theme } from '../theme'
+
+// ── Icons (SVG, not emoji) ──────────────────────────────────────────────────────
+
+function IconSearch(props) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...props}>
+      <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+    </svg>
+  )
+}
+function IconBot(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="4" y="8" width="16" height="11" rx="3" /><path d="M12 8V4M9 4h6" />
+      <circle cx="9" cy="13.5" r="1.2" fill="currentColor" stroke="none" /><circle cx="15" cy="13.5" r="1.2" fill="currentColor" stroke="none" />
+      <path d="M9 17h6" />
+    </svg>
+  )
+}
+function IconClose(props) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" {...props}>
+      <path d="M6 6l12 12M18 6 6 18" />
+    </svg>
+  )
+}
+function IconChat(props) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" />
+    </svg>
+  )
+}
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
 
@@ -60,7 +94,7 @@ function ModalHeader({ title, sub, onClose }) {
         {sub && <div style={{ fontSize: 10, fontWeight: 600, color: '#7b82a0', textTransform: 'uppercase', letterSpacing: '.8px', marginBottom: 5 }}>{sub}</div>}
         <div style={{ fontSize: 20, fontWeight: 700 }}>{title}</div>
       </div>
-      <button onClick={onClose} style={{ background: 'transparent', border: '1px solid #2a2d40', borderRadius: 8, color: '#7b82a0', fontSize: 16, cursor: 'pointer', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+      <button onClick={onClose} aria-label="Close" style={{ background: 'transparent', border: '1px solid #2a2d40', borderRadius: 8, color: '#7b82a0', cursor: 'pointer', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color .15s, border-color .15s' }}><IconClose /></button>
     </div>
   )
 }
@@ -212,7 +246,7 @@ function ReturnDetail({ ret, onClose, onCustomerClick }) {
         border: `1px solid ${ret.status === 'flagged' ? '#e74c3c30' : ret.status === 'declined' ? '#ff950030' : '#00d4aa30'}`,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-          <span style={{ fontSize: 14 }}>🤖</span>
+          <IconBot style={{ color: ret.status === 'flagged' ? '#ff7c7c' : ret.status === 'declined' ? '#ff9500' : '#00d4aa', flexShrink: 0 }} />
           <span style={{ fontSize: 10, fontWeight: 700, color: ret.status === 'flagged' ? '#ff7c7c' : ret.status === 'declined' ? '#ff9500' : '#00d4aa', textTransform: 'uppercase', letterSpacing: '.7px' }}>
             AI Agent Analysis
           </span>
@@ -285,7 +319,7 @@ function CustomerDetail({ customerId, returns, onClose }) {
           { label: 'Flagged', value: flaggedCount, color: flaggedCount > 0 ? '#ff7c7c' : '#7b82a0' },
         ].map(s => (
           <div key={s.label} style={{ background: '#1a1d2e', borderRadius: 10, padding: '14px 16px', textAlign: 'center' }}>
-            <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: s.color, fontFamily: theme.font.heading }}>{s.value}</div>
             <div style={{ fontSize: 10, color: '#7b82a0', marginTop: 3 }}>{s.label}</div>
           </div>
         ))}
@@ -327,7 +361,7 @@ function AIInsights({ returns, onReEvaluate, reEvaluating }) {
     <div style={{ background: '#12141f', border: '1px solid #1e2133', borderRadius: 14, padding: 22, display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 16 }}>🤖</span>
+          <IconBot style={{ color: theme.color.primary, flexShrink: 0 }} />
           <span style={{ fontSize: 11, fontWeight: 700, color: '#7b82a0', textTransform: 'uppercase', letterSpacing: '.8px' }}>AI Agent Insights</span>
           <span style={{ fontSize: 9, background: '#7c6fff1a', color: '#7c6fff', padding: '2px 8px', borderRadius: 20, fontWeight: 700 }}>analytics_agent</span>
         </div>
@@ -515,8 +549,8 @@ export default function Overview() {
 
   if (loading) return (
     <div style={{ color: '#7b82a0', padding: 60, textAlign: 'center', fontSize: 14 }}>
-      <div style={{ fontSize: 28, marginBottom: 16 }}>🤖</div>
-      <div style={{ fontWeight: 600, color: '#e8eaf0', marginBottom: 8 }}>Agent is evaluating returns…</div>
+      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}><IconBot width={28} height={28} style={{ color: theme.color.primary }} /></div>
+      <div style={{ fontWeight: 600, color: '#e8eaf0', marginBottom: 8, fontFamily: theme.font.heading }}>Agent is evaluating returns…</div>
       <div style={{ fontSize: 12 }}>The analytics_agent is reviewing each return against policy. This takes a moment on first load.</div>
     </div>
   )
@@ -525,14 +559,14 @@ export default function Overview() {
     <div>
       {/* Page header */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 4px 0' }}>Return Management</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 4px 0', fontFamily: theme.font.heading }}>Return Management</h1>
         <div style={{ fontSize: 13, color: '#7b82a0' }}>AI-powered review · {returns.length} total returns</div>
       </div>
 
       {/* Search + filters */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
         <div style={{ position: 'relative', flex: '1 1 280px', maxWidth: 420 }}>
-          <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#7b82a0', fontSize: 14 }}>🔍</span>
+          <IconSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#7b82a0' }} />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -605,7 +639,7 @@ export default function Overview() {
                           onMouseEnter={e => { e.currentTarget.style.borderColor = '#7c6fff'; e.currentTarget.style.color = '#9b8fff' }}
                           onMouseLeave={e => { e.currentTarget.style.borderColor = '#2a2d40'; e.currentTarget.style.color = '#7b82a0' }}
                         >
-                          💬
+                          <IconChat />
                           {(msgCounts[String(r.rowid)] || 0) > 0 && (
                             <span style={{
                               position: 'absolute', top: -6, right: -6,

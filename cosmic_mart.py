@@ -116,6 +116,17 @@ def get_stock_level(product_name: str, market: str, as_of_date: Union[str, datet
     return int(result["stock"].iloc[0]) if not result.empty else 0
 
 
+# Orders have no delivery_date column — only order_date is recorded. The return
+# policy window is 30 days from delivery, not from purchase, so we estimate a
+# delivery date using a fixed shipping lead time, applied consistently everywhere
+# eligibility or "delivered N days ago" is computed.
+CUSTOMER_DELIVERY_LEAD_DAYS = 4
+
+def estimate_delivered_date(order_date_str: str) -> str:
+    base = datetime.fromisoformat(order_date_str.split("T")[0])
+    return (base + timedelta(days=CUSTOMER_DELIVERY_LEAD_DAYS)).strftime("%Y-%m-%d")
+
+
 def get_supplier_delivery_date(date_str: str, quantity: int) -> str:
     try:
         base = datetime.fromisoformat(date_str.split("T")[0])
@@ -596,9 +607,10 @@ def check_return_eligibility(order_id: int, return_date: str) -> str:
     )
     if order.empty:
         return f"Order {order_id} not found."
-    order_date = datetime.fromisoformat(order.iloc[0]["order_date"])
+    delivered_date_str = estimate_delivered_date(order.iloc[0]["order_date"])
+    delivered_date = datetime.fromisoformat(delivered_date_str)
     return_dt = datetime.fromisoformat(return_date)
-    days_since = (return_dt - order_date).days
+    days_since = (return_dt - delivered_date).days
     eligible = days_since <= 30
     items = pd.read_sql(
         "SELECT product_name, quantity, total_price FROM order_items WHERE order_id = :id",
@@ -609,8 +621,9 @@ def check_return_eligibility(order_id: int, return_date: str) -> str:
         for _, r in items.iterrows()
     )
     return (
-        f"Order {order_id} — placed {order.iloc[0]['order_date']} ({days_since} days ago)\n"
-        f"Return eligible: {'YES (within 30-day window)' if eligible else 'NO (window expired)'}\n"
+        f"Order {order_id} — placed {order.iloc[0]['order_date']}, delivered {delivered_date_str} "
+        f"({days_since} days ago)\n"
+        f"Return eligible: {'YES (within 30-day window of delivery)' if eligible else 'NO (window expired)'}\n"
         f"Items in order:\n{items_str}"
     )
 

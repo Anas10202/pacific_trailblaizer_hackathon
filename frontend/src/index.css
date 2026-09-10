@@ -1,5 +1,36 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', sans-serif; background: #0a0b14; color: #e8eaf0; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --bg: #0a0b14;
+  --surface: #12141f;
+  --surface-2: #161829;
+  --card: #1a1d2e;
+  --card-border: #2a2d40;
+  --border: #1e2133;
+  --text: #e8eaf0;
+  --text-muted: #7b82a0;
+  --text-dim: #545b76;
+  --primary: #7c6fff;
+  --primary-hover: #8f84ff;
+  --secondary: #ff6b9d;
+  --accent-blue: #3b82f6;
+  --success: #00d4aa;
+  --warning: #f5a623;
+  --danger: #ff5470;
+  --font-heading: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Open Sans', system-ui, sans-serif;
+}
+
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+button, a, input, [role="button"] { cursor: pointer; }
+button:disabled, [role="button"][aria-disabled="true"] { cursor: default; }
+
+button:focus-visible, a:focus-visible, input:focus-visible, [role="button"]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: #12141f; }
 ::-webkit-scrollbar-thumb { background: #2a2d40; border-radius: 3px; }

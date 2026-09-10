@@ -91,7 +91,7 @@ DEMO_SEEDS = [
 
 RETURN_POLICY = """
 Cosmic Mart Return Policy:
-- Returns must be submitted within 30 days of the order date
+- Returns must be submitted within 30 days of the delivery date (not the order date)
 - Manufacturing defects and DOA (dead on arrival) products are fully covered
 - Physical damage caused by the user (drops, misuse, liquid) is NOT covered
 - Digital software licenses are non-returnable once the activation key has been accessed
@@ -149,9 +149,22 @@ def _days_since(order_date, return_date):
     except Exception:
         return "unknown"
 
+_DEFAULT_CUSTOMER_MESSAGE = {
+    "approved": "Good news — your return has been approved and your refund is on its way.",
+    "flagged": "We're taking a closer look at your return. A specialist will follow up shortly.",
+    "declined": "We're unable to approve this return based on our return policy.",
+}
+
 def _parse_agent_response(text):
-    """Extract structured fields from the agent's free-text response."""
+    """Extract structured fields from the agent's free-text response.
+
+    REASON is the detailed internal note (policy citations, numbers, dates) shown
+    to the Return Management team. CUSTOMER_MESSAGE is a separate, short,
+    plain-language line meant to be shown to the customer directly — it must never
+    leak internal policy text, team names, or raw error details to the customer app.
+    """
     status, assigned_to, escalation_team, ai_note = "approved", "customer_agent (Auto-approved)", None, text.strip()
+    customer_message = None
 
     m = re.search(r'STATUS:\s*(APPROVED|FLAGGED|DECLINED)', text, re.IGNORECASE)
     if m:
@@ -166,18 +179,32 @@ def _parse_agent_response(text):
         val = m.group(1).strip()
         escalation_team = None if val.upper() in ('NONE', 'N/A', '') else val
 
+    m = re.search(r'CUSTOMER_MESSAGE:\s*(.+?)(?:\n|$)', text)
+    if m:
+        customer_message = m.group(1).strip()
+
     m = re.search(r'REASON:\s*(.+)', text, re.DOTALL)
     if m:
         ai_note = m.group(1).strip()
 
+    if not customer_message:
+        customer_message = _DEFAULT_CUSTOMER_MESSAGE.get(status, _DEFAULT_CUSTOMER_MESSAGE["flagged"])
+
     return {"status": status, "assigned_to": assigned_to,
-            "escalation_team": escalation_team, "ai_note": ai_note}
+            "escalation_team": escalation_team, "ai_note": ai_note,
+            "customer_message": customer_message}
 
 def evaluate_return(row):
     """Call the Anthropic model to evaluate a return and return a decision dict."""
     order_date = row.get("order_date") or "unknown"
     extra = row.get("extra_context") or ""
-    days = _days_since(order_date, row.get("return_date", ""))
+
+    try:
+        from cosmic_mart import estimate_delivered_date
+        delivered_date = estimate_delivered_date(order_date) if order_date != "unknown" else "unknown"
+    except Exception:
+        delivered_date = "unknown"
+    days = _days_since(delivered_date, row.get("return_date", ""))
 
     prompt = f"""You are a return policy evaluation agent for Cosmic Mart, an electronics retailer.
 Evaluate the return request below and decide whether to APPROVE, FLAG, or DECLINE it.
@@ -186,7 +213,8 @@ Respond ONLY in this exact format — no preamble, no extra text:
 STATUS: [APPROVED or FLAGGED or DECLINED]
 ASSIGNED_TO: [e.g. "customer_agent (Auto-approved)" | "Pricing Team" | "Product Team" | "declined_agent (Policy: <short reason>)"]
 ESCALATION_TEAM: [team name if FLAGGED, otherwise NONE]
-REASON: [3-5 sentences citing specific numbers, dates, and policy rules that justify your decision]
+CUSTOMER_MESSAGE: [1-2 short, friendly sentences explaining the decision directly to the customer — plain language only, no policy citations, no internal team names, no internal jargon]
+REASON: [3-5 sentences citing specific numbers, dates, and policy rules that justify your decision — this is for the internal Return Management team, not the customer]
 
 Return request details:
 - Product: {row.get("product_name")}
@@ -194,7 +222,8 @@ Return request details:
 - Quantity requested: {row.get("quantity")}
 - Return Date: {row.get("return_date")}
 - Order Date: {order_date}
-- Days since purchase: {days}
+- Estimated Delivery Date: {delivered_date}
+- Days since delivery: {days}
 - Refund amount requested: ${row.get("refund_amount") or 0:.2f}
 - Customer's stated reason: {row.get("reason")}
 {("- Additional context: " + extra) if extra else ""}
@@ -220,6 +249,7 @@ Return request details:
             "assigned_to": "Agent unavailable",
             "escalation_team": None,
             "ai_note": f"Agent evaluation failed: {e}",
+            "customer_message": "We're reviewing your return manually and will follow up soon.",
         }
 
 def process_pending_returns():
