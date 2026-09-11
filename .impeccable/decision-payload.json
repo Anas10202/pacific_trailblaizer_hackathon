@@ -1,0 +1,102 @@
+{
+  "title": "Choose the visual world for Cosmic Mart",
+  "question": "The roll assigned candidate 4 of my grounded list. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Split-Flap Departures Board",
+      "kicker": "THE ROLL",
+      "lineage": "Solari split-flap airport departure displays, 1960s–present",
+      "thesis": "Every return is a flight — landed, held, or cancelled. The operator reads the board, not a dashboard.",
+      "palette": ["#1C1B22", "#F0EDE0", "#F5A623", "#00D68A", "#FF4B5E", "#6840FF"],
+      "materials": ["charcoal panel ground", "warm-white board lettering", "mechanical status flip chips", "amber/green/red status lights"],
+      "viewport": "Full-width board: KPI strip across the top reads FLAGGED · ESCALATIONS · APPROVED · DECLINED as panel-mounted counters. Returns queue as disciplined board rows — ID, product, customer, date, amount, status chip. The AI sidebar reads as a service-status information panel. Status chips execute a CSS 3D flip animation when an agent decision arrives.",
+      "risk": "Still dark — reads as 'purposefully dark' only if the charcoal-and-warm-white grammar is executed with complete discipline. No glow, no blur, no blue-black space cast.",
+      "raised": [
+        {"from": "darkroom-zone-sheets", "raise": "Tonal precision: each status level maps to a deliberate luminance step, never decorative color."},
+        {"from": "night-instruments", "raise": "Damped-spring flip: status chip rotates in with physical overshoot on agent decision."},
+        {"from": "transit-map", "raise": "Color role discipline: each status type owns exactly one color appearing nowhere else."},
+        {"from": "cloud-edge", "raise": "Achromatic body text, chromatic status edges — color earned, not scattered."}
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Apollo Operations Manual",
+      "kicker": "IMPECCABLE'S PICK",
+      "lineage": "NASA Apollo mission procedure documents and operations manuals, 1960s–70s",
+      "thesis": "Mission control on white: returns managed as a flight procedure, each agent decision a logged step with a status stamp.",
+      "palette": ["#F7F5EE", "#1A1916", "#003DA6", "#F0A000", "#00854A", "#D42B2B"],
+      "materials": ["white procedure paper ground", "blue-line callout rules", "amber status boxes", "monospaced step numbers", "red/green status stamps"],
+      "viewport": "White ground. KPI row as procedure status boxes — rectangular, labeled, stamped with color. Returns table as a procedure log: step numbers left, product/customer columns, status as a stamped badge. AI sidebar as a mission events column. The agent system elements use NASA blue; status is stamped, not lit.",
+      "risk": "The direction most runs landing on 'NASA + space ops' produce — familiar and effective. Naming the familiarity honestly."
+    },
+    {
+      "id": "challenger-instruments",
+      "label": "Night Instrument Six-Pack",
+      "verdict": "competitive",
+      "lineage": "Small aircraft night VFR instrument panel",
+      "thesis": "Six live gauges hold the operator's attention the way cockpit instruments hold a pilot's in cloud.",
+      "palette": ["#0A0A0C", "#E8E8CC", "#00D040", "#F5A00A", "#FF2020"],
+      "materials": ["matte-black panel", "luminous white scale markings", "amber caution lamps", "damped SVG needles"],
+      "viewport": "Six KPI gauges pinned above the returns table — Flagged, Escalations, Approved, Declined, Pending, Total Exposure. Needles animate with damped spring physics. Returns rows below. AI sidebar as a placard column beside the panel.",
+      "case": "High audience identification — judges know cockpit instruments. Loses product clarity: the gauge topology makes individual return rows and row-level actions awkward.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-night-flight-six-pack-hero.webp"
+    },
+    {
+      "id": "challenger-zone-sheets",
+      "label": "Darkroom Zone Sheets",
+      "verdict": "declined",
+      "lineage": "Ansel Adams zone system, darkroom exposure records",
+      "palette": ["#101418", "#9FB4C0", "#C03030"],
+      "case": "Fuses poorly: zone/hatch metaphor for returns status requires explanation the 5-second judge read cannot afford.",
+      "kept": "Luminance precision — raised into the assigned direction."
+    },
+    {
+      "id": "challenger-transit-map",
+      "label": "Midnight Transit Diagram",
+      "verdict": "declined",
+      "lineage": "Metropolitan rail enamel mural, Harry Beck tradition",
+      "palette": ["#0A1428", "#FFFFFF", "#DC241F", "#0019A8", "#F5A623"],
+      "case": "High audience identification; product clarity fails — return rows cannot be represented as network routes at operational density.",
+      "kept": "Color role discipline — one committed color per status, raised into the assigned direction."
+    },
+    {
+      "id": "challenger-seedbed",
+      "label": "Saturated Ground Capsules",
+      "verdict": "declined",
+      "lineage": "Contemporary floating pill / capsule nav aesthetic",
+      "palette": ["#82CC5C", "#2F3130", "#FFFFFF", "#F0574C"],
+      "case": "Too casual for an ops demo context; saturated ground competes with data density.",
+      "kept": "Regional color commitment — one structural color per functional zone, raised into the assigned direction."
+    },
+    {
+      "id": "challenger-sneaker-boxes",
+      "label": "Sneaker Box Stack",
+      "verdict": "declined",
+      "lineage": "Sneaker archive wall, end-label browse pattern",
+      "palette": ["#D2691E", "#1A1008", "#FFFFFF", "#F5D42B"],
+      "case": "Charming at small scale; breaks at 24+ simultaneous returns — the pull-and-open lid interaction cannot scale to operational density.",
+      "kept": "Condensed end-label grid — raised into the assigned direction's row typography."
+    },
+    {
+      "id": "challenger-cloud-edge",
+      "label": "Iridescent Cloud Edge",
+      "verdict": "declined",
+      "lineage": "Cloud diffraction, narrow spectral fringe, achromatic body",
+      "palette": ["#F8F8F8", "#404040", "#A0D8C0", "#E8A0B8"],
+      "case": "The achromatic-body/chromatic-edge grammar is clean but the source system has no audience identification in this context.",
+      "kept": "Achromatic text field, color only at state edges — raised into the assigned direction."
+    }
+  ],
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "What ops dashboards ship: white/light ground, neutral cards, blue or violet primary, a sidebar.",
+    "palette": ["#FFFFFF", "#111827", "#4F46E5", "#10B981"],
+    "materials": ["white card surface", "neutral grid", "colored status badges"],
+    "viewport": "Clean white background. Standard sticky nav. KPI cards row. Data table with status badges. Sidebar panel.",
+    "risk": "Indistinguishable from Retool, Linear, or Datadog — the design genre the brief asked to leave."
+  },
+  "steer": true,
+  "buildPath": {"value": "code", "toggle": false}
+}

@@ -1,5 +1,10 @@
 {
-  "description": "Impeccable design detector: immediate-tier checks after Edit/Write on UI files, full-rule deep pass on Stop.",
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"C:\\\\Users\\\\karena.tran\\\\OneDrive - Accenture\\\\Documents\\\\pacific_trailblaizer_hackathon\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\impeccable.cmd\" context 2>&1)",
+      "PowerShell(& \"C:\\\\Users\\\\karena.tran\\\\OneDrive - Accenture\\\\Documents\\\\pacific_trailblaizer_hackathon\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\impeccable.cmd\" signals 2>&1)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
@@ -26,5 +31,6 @@
         ]
       }
     ]
-  }
+  },
+  "description": "Impeccable design detector: immediate-tier checks after Edit/Write on UI files, full-rule deep pass on Stop."
 }

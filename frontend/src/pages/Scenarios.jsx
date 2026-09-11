@@ -21,17 +21,17 @@ export default function Scenarios() {
   return (
     <div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14, marginBottom: 20 }}>
-        <div style={{ background: '#1a1d2e', border: '1px solid #2a2d40', borderRadius: 14, padding: '16px 20px' }}>
-          <div style={{ fontSize: 10, fontWeight: 600, color: '#7b82a0', textTransform: 'uppercase', letterSpacing: '.8px', marginBottom: 8 }}>Resolved</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: '#00d4aa' }}>9</div>
+        <div style={{ background: '#1C1C1C', border: '1px solid #282828', borderRadius: 14, padding: '16px 20px' }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#505A60', textTransform: 'uppercase', letterSpacing: '.8px', marginBottom: 8 }}>Resolved</div>
+          <div style={{ fontSize: 28, fontWeight: 800, color: '#00E87A' }}>9</div>
         </div>
-        <div style={{ background: '#1a1d2e', border: '1px solid #2a2d40', borderRadius: 14, padding: '16px 20px' }}>
-          <div style={{ fontSize: 10, fontWeight: 600, color: '#7b82a0', textTransform: 'uppercase', letterSpacing: '.8px', marginBottom: 8 }}>Fulfilled</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: '#7c6fff' }}>1</div>
+        <div style={{ background: '#1C1C1C', border: '1px solid #282828', borderRadius: 14, padding: '16px 20px' }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#505A60', textTransform: 'uppercase', letterSpacing: '.8px', marginBottom: 8 }}>Fulfilled</div>
+          <div style={{ fontSize: 28, fontWeight: 800, color: '#6840FF' }}>1</div>
         </div>
-        <div style={{ background: '#1a1d2e', border: '1px solid #2a2d40', borderRadius: 14, padding: '16px 20px' }}>
-          <div style={{ fontSize: 10, fontWeight: 600, color: '#7b82a0', textTransform: 'uppercase', letterSpacing: '.8px', marginBottom: 8 }}>Net Cash</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: '#00d4aa' }}>+$455</div>
+        <div style={{ background: '#1C1C1C', border: '1px solid #282828', borderRadius: 14, padding: '16px 20px' }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#505A60', textTransform: 'uppercase', letterSpacing: '.8px', marginBottom: 8 }}>Net Cash</div>
+          <div style={{ fontSize: 28, fontWeight: 800, color: '#00E87A' }}>+$455</div>
         </div>
       </div>
 
@@ -40,23 +40,23 @@ export default function Scenarios() {
           <thead>
             <tr>
               {['#', 'Type', 'Customer', 'Market', 'Date', 'Status', 'Cash Δ'].map(h => (
-                <th key={h} style={{ fontSize: 10, fontWeight: 600, color: '#7b82a0', textTransform: 'uppercase', letterSpacing: '.6px', padding: '6px 12px', textAlign: 'left', borderBottom: '1px solid #2a2d40' }}>{h}</th>
+                <th key={h} style={{ fontSize: 10, fontWeight: 600, color: '#505A60', textTransform: 'uppercase', letterSpacing: '.6px', padding: '6px 12px', textAlign: 'left', borderBottom: '1px solid #282828' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {SCENARIOS.map(s => {
-              const dc = s.cashDelta > 0 ? '#00d4aa' : s.cashDelta < 0 ? '#e74c3c' : '#7b82a0'
+              const dc = s.cashDelta > 0 ? '#00E87A' : s.cashDelta < 0 ? '#FF3030' : '#505A60'
               const ds = s.cashDelta > 0 ? '+' : ''
               return (
                 <tr key={s.id} onClick={() => setSelected(s)} style={{ cursor: 'pointer', transition: 'background .12s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#1e2133'}
+                  onMouseEnter={e => e.currentTarget.style.background = '#202020'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                  <td style={{ padding: '10px 12px', fontSize: 12, color: '#7b82a0', borderBottom: '1px solid #1e2030' }}>{s.id}</td>
+                  <td style={{ padding: '10px 12px', fontSize: 12, color: '#505A60', borderBottom: '1px solid #1e2030' }}>{s.id}</td>
                   <td style={{ padding: '10px 12px', fontSize: 12, fontWeight: 600, borderBottom: '1px solid #1e2030' }}>{s.type.replace(/_/g, ' ')}</td>
                   <td style={{ padding: '10px 12px', fontSize: 12, borderBottom: '1px solid #1e2030' }}>{s.customer}</td>
-                  <td style={{ padding: '10px 12px', fontSize: 11, color: '#7b82a0', borderBottom: '1px solid #1e2030' }}>{s.market}</td>
-                  <td style={{ padding: '10px 12px', fontSize: 11, color: '#7b82a0', borderBottom: '1px solid #1e2030' }}>{s.date}</td>
+                  <td style={{ padding: '10px 12px', fontSize: 11, color: '#505A60', borderBottom: '1px solid #1e2030' }}>{s.market}</td>
+                  <td style={{ padding: '10px 12px', fontSize: 11, color: '#505A60', borderBottom: '1px solid #1e2030' }}>{s.date}</td>
                   <td style={{ padding: '10px 12px', borderBottom: '1px solid #1e2030' }}>
                     <Badge variant={s.status}>{s.status === 'fulfilled' ? '✓ fulfilled' : '✓ resolved'}</Badge>
                   </td>
@@ -76,14 +76,14 @@ export default function Scenarios() {
           display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200,
         }}>
           <div onClick={e => e.stopPropagation()} style={{
-            background: '#1a1d2e', border: '1px solid #2a2d40', borderRadius: 18,
+            background: '#1C1C1C', border: '1px solid #282828', borderRadius: 18,
             width: 560, maxHeight: '80vh', overflowY: 'auto', padding: 28,
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
               <div style={{ fontSize: 16, fontWeight: 700, textTransform: 'uppercase' }}>{selected.type.replace(/_/g, ' ')}</div>
-              <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: '#7b82a0', fontSize: 20, cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: '#505A60', fontSize: 20, cursor: 'pointer' }}>✕</button>
             </div>
-            <div style={{ fontSize: 11, color: '#7b82a0', marginBottom: 20 }}>
+            <div style={{ fontSize: 11, color: '#505A60', marginBottom: 20 }}>
               {selected.customer} · {selected.market} · {selected.date}
             </div>
             {[
@@ -91,8 +91,8 @@ export default function Scenarios() {
               { label: 'Agent Response', val: selected.response },
               { label: 'Financial Impact', val: selected.finance },
             ].map(b => (
-              <div key={b.label} style={{ background: '#12141f', borderRadius: 10, padding: 14, marginBottom: 10 }}>
-                <div style={{ fontSize: 10, color: '#7b82a0', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 6 }}>{b.label}</div>
+              <div key={b.label} style={{ background: '#181818', borderRadius: 10, padding: 14, marginBottom: 10 }}>
+                <div style={{ fontSize: 10, color: '#505A60', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 6 }}>{b.label}</div>
                 <div style={{ fontSize: 13, lineHeight: 1.6 }}>{b.val}</div>
               </div>
             ))}
