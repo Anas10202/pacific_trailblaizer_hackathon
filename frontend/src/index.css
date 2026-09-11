@@ -1,27 +1,38 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0a0b14;
-  --surface: #12141f;
-  --surface-2: #161829;
-  --card: #1a1d2e;
-  --card-border: #2a2d40;
-  --border: #1e2133;
-  --text: #e8eaf0;
-  --text-muted: #7b82a0;
-  --text-dim: #545b76;
-  --primary: #7c6fff;
-  --primary-hover: #8f84ff;
-  --secondary: #ff6b9d;
+  --bg: #0A0E2A;
+  --surface: #12183A;
+  --surface-2: #1A2048;
+  --card: #12183A;
+  --card-border: #2A3260;
+  --border: #1E2650;
+  --text: #E8EDF8;
+  --text-muted: #7A85B0;
+  --text-dim: #3A4470;
+  --primary: #6840FF;
+  --primary-hover: #7A52FF;
+  --secondary: #00C8E8;
   --accent-blue: #3b82f6;
-  --success: #00d4aa;
-  --warning: #f5a623;
-  --danger: #ff5470;
-  --font-heading: 'Poppins', system-ui, sans-serif;
-  --font-body: 'Open Sans', system-ui, sans-serif;
+  --success: #00C8E8;
+  --warning: #F5A020;
+  --danger: #FF4B6A;
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 }
 
-body { font-family: var(--font-body); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+/* Celestial atlas coordinate grid — the ground plane the data sits on */
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(160, 180, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(160, 180, 255, 0.055) 1px, transparent 1px);
+  background-size: 72px 72px;
+  background-position: -1px -1px;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
 
 button, a, input, [role="button"] { cursor: pointer; }
 button:disabled, [role="button"][aria-disabled="true"] { cursor: default; }
@@ -31,6 +42,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, [role="button"]:focu
   outline-offset: 2px;
 }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #12141f; }
-::-webkit-scrollbar-thumb { background: #2a2d40; border-radius: 3px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #0A0E2A; }
+::-webkit-scrollbar-thumb { background: #2A3260; border-radius: 2px; }

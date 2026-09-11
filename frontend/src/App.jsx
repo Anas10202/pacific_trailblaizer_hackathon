@@ -16,29 +16,38 @@ export default function App() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: theme.color.bg, color: theme.color.text, fontFamily: theme.font.body }}>
       <nav style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 32px', background: theme.color.surface,
-        borderBottom: `1px solid ${theme.color.border}`, position: 'sticky', top: 0, zIndex: 100,
+        padding: '12px 32px', background: theme.color.surface,
+        borderBottom: `1px solid ${theme.color.cardBorder}`, position: 'sticky', top: 0, zIndex: 100,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {/* Logo tile — violet gradient, atlas-appropriate circle shape */}
           <div style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: `linear-gradient(135deg,${theme.color.primary},${theme.color.secondary})`,
+            width: 34, height: 34, borderRadius: '50%',
+            background: `linear-gradient(135deg, ${theme.color.primary}, #4A28D8)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: `0 0 0 1px ${theme.color.primary}60, 0 0 16px ${theme.color.primary}30`,
           }}><LogoMark /></div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: 0.3, fontFamily: theme.font.heading }}>Cosmic Mart</div>
-            <div style={{ fontSize: 10, color: theme.color.textMuted }}>Return Management · Multi-Agent System</div>
+            <div style={{ fontSize: 15, fontWeight: 800, letterSpacing: -0.2, fontFamily: theme.font.heading }}>Cosmic Mart</div>
+            <div style={{ fontSize: 9.5, color: theme.color.textMuted, letterSpacing: '.4px', textTransform: 'uppercase' }}>Mission Control · Multi-Agent</div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: theme.color.success }}>
-          <span style={{ width: 7, height: 7, borderRadius: '50%', background: theme.color.success, display: 'inline-block', animation: 'pulse 2s infinite' }} />
+        {/* AI agents badge — violet, the AI system color */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 7,
+          fontSize: 10, fontWeight: 700, color: '#8A60FF',
+          background: '#0E0C20', border: '1px solid #6840FF35',
+          borderRadius: 20, padding: '5px 14px',
+          letterSpacing: '.5px', textTransform: 'uppercase',
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#6840FF', display: 'inline-block', flexShrink: 0, animation: 'pulse 2s infinite' }} />
           AI Agents Active
         </div>
       </nav>
       <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
       `}</style>
-      <main style={{ flex: 1, padding: '28px 32px', maxWidth: 1320, margin: '0 auto', width: '100%' }}>
+      <main style={{ flex: 1, padding: '24px 32px', maxWidth: 1320, margin: '0 auto', width: '100%' }}>
         <Overview />
       </main>
     </div>

@@ -3,203 +3,311 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cosmic Mart — Returns</title>
+<title>Cosmic Mart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* shared brand tokens — kept in sync with the internal dashboard's palette */
-    --void:#0a0b14; --page:#0c0a1a; --panel:#12141f; --panel-2:#1b1636; --edge:#2a2d40;
-    --violet:#7c6fff; --violet-bright:#8f84ff; --violet-soft:#c9a5ff;
-    --mint:#00d4aa; --mint-bright:#3fd18a; --amber:#f5a623; --rose:#ff5470;
-    --ink:#e8eaf0; --ink-dim:#b3a9d6; --ink-faint:#7b82a0;
-    --font-heading:'Poppins',system-ui,sans-serif;
-    --font-body:'Open Sans',system-ui,sans-serif;
-    /* glassmorphism tokens — frosted panels over the vibrant space gradient */
-    --glass:rgba(255,255,255,0.07); --glass-strong:rgba(255,255,255,0.13);
-    --glass-border:rgba(255,255,255,0.16); --glass-blur:blur(20px);
+    /* Celestial Atlas — Norton's Star Atlas / Uranometria world
+       Status colors map to stellar spectral classes.
+       Violet (#6840FF) is reserved for AI/agent system elements only. */
+    --void:#080A1E;   /* deepest space */
+    --page:#0A0E2A;   /* atlas ground — deep navy */
+    --panel:#12183A;  /* elevated panel surface */
+    --panel-2:#1A2048;/* deeper elevation */
+    --edge:#2A3260;   /* panel border */
+    --violet:#6840FF; --violet-bright:#7A52FF; --violet-soft:#A880FF;
+    /* Spectral class status colors */
+    --cyan:#00C8E8;   /* A-type star — approved */
+    --amber:#F5A020;  /* K-type star — flagged/pending */
+    --rose:#FF4B6A;   /* M-type star — declined */
+    --ink:#E8EDF8;    /* cool white — atlas paper */
+    --ink-dim:#9AA8C8;
+    --ink-faint:#7A85B0;
+    --font-heading:'Space Grotesk',system-ui,sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    /* Surface tokens */
+    --glass:rgba(18,24,58,0.94);
+    --glass-strong:rgba(26,32,72,0.97);
+    --glass-border:rgba(160,180,255,0.12);
+    --glass-blur:blur(18px);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
     font-family:var(--font-body);
-    background:
-      radial-gradient(1000px 600px at 85% -10%, #3a1f8a 0%, transparent 55%),
-      radial-gradient(800px 500px at -10% 110%, #1a3a8f 0%, transparent 50%),
-      radial-gradient(900px 700px at 50% 40%, #6b2fd6 0%, transparent 60%),
-      radial-gradient(700px 500px at 90% 90%, #ff6b9d 0%, transparent 45%),
-      var(--void);
+    /* Celestial atlas coordinate grid — same 72px grid as the internal dashboard */
+    background-color:var(--page);
+    background-image:
+      linear-gradient(rgba(160,180,255,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(160,180,255,0.055) 1px, transparent 1px);
+    background-size:72px 72px;
+    background-position:-1px -1px;
     color:var(--ink); min-height:100vh;
     display:flex; flex-direction:column; align-items:center; padding:26px 16px 40px;
+    -webkit-font-smoothing:antialiased;
   }
   button, [role="button"], .ret-btn, .reason, .reset{ cursor:pointer; }
   button:focus-visible, [role="button"]:focus-visible, .ret-btn:focus-visible,
   .submit-btn:focus-visible, .reset:focus-visible, textarea:focus-visible{
     outline:2px solid var(--violet-bright); outline-offset:2px;
   }
-  .stars{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
-  .stars::before{content:""; position:absolute; inset:0;
-    background-image:
-      radial-gradient(1px 1px at 20% 30%,#fff,transparent),
-      radial-gradient(1px 1px at 60% 70%,#cbb8ff,transparent),
-      radial-gradient(1px 1px at 80% 20%,#fff,transparent),
-      radial-gradient(1px 1px at 40% 85%,#9fd8ff,transparent),
-      radial-gradient(1px 1px at 92% 55%,#fff,transparent),
-      radial-gradient(1px 1px at 12% 92%,#d8c6ff,transparent),
-      radial-gradient(1px 1px at 33% 12%,#fff,transparent);}
+  /* Starfield — rendered by canvas JS at bottom; canvas replaces the old .stars div */
+  #starfield{position:fixed; inset:0; pointer-events:none; z-index:0; width:100%; height:100%;}
 
-  .head{position:relative; z-index:1; display:flex; align-items:center; gap:12px; margin-bottom:8px;}
-  .logo{width:40px; height:40px; border-radius:50%; border:2.5px solid var(--violet); display:grid; place-items:center; background:#000;}
-  .logo::before{content:""; width:17px; height:17px; border-radius:50%; background:var(--violet-bright); box-shadow:-12px 0 0 -3px var(--violet-bright),12px 0 0 -2px var(--violet-bright);}
-  .head .bn{font-family:var(--font-heading); font-weight:700; letter-spacing:2px; font-size:17px;}
-  .head .bn small{display:block; font-size:9.5px; letter-spacing:2px; color:var(--ink-faint); font-weight:600;}
-  .sub{position:relative; z-index:1; font-size:12.5px; color:var(--ink-faint); margin-bottom:20px;}
-  .reset{position:relative; z-index:1; margin-bottom:18px; font-size:12px; color:var(--ink-faint); background:transparent; border:1px solid var(--edge); border-radius:8px; padding:7px 14px; cursor:pointer; transition:.15s;}
-  .reset:hover{border-color:var(--violet-bright); color:var(--ink);}
-
-  /* phone — the bezel stays an opaque device chassis; everything on the "screen"
-     is glass panels floating over a colorful wallpaper, per the glassmorphism skill */
-  .phone-frame{position:relative; z-index:1; width:410px; max-width:100%; background:#000; border-radius:38px; padding:12px; box-shadow:0 34px 90px -28px rgba(139,47,255,0.6); border:1px solid var(--edge);}
-  .phone{
-    border-radius:28px; overflow:hidden; height:680px; display:flex; flex-direction:column; position:relative;
-    background:
-      radial-gradient(120% 90% at 15% 0%, #3a1f8a 0%, transparent 55%),
-      radial-gradient(120% 90% at 100% 100%, #7c2fd6 0%, transparent 55%),
-      radial-gradient(90% 70% at 90% 10%, #ff6b9d 0%, transparent 40%),
-      var(--page);
+  .head{position:relative; z-index:1; display:flex; align-items:center; gap:12px; margin-bottom:10px;}
+  /* Logo ring — SVG icon placed inside; ::before suppressed */
+  .logo{width:40px; height:40px; border-radius:50%; border:2px solid rgba(104,64,255,0.7); display:grid; place-items:center; background:rgba(4,4,16,0.9); flex-shrink:0;}
+  .logo::before{content:none;}
+  .head .bn{font-family:var(--font-heading); font-weight:700; letter-spacing:.5px; font-size:17px;}
+  .head .bn small{display:block; font-size:10px; letter-spacing:2px; color:var(--ink-faint); font-weight:600; text-transform:uppercase; margin-top:1px;}
+  /* Mission status strip — AI agent indicator: violet = AI system color */
+  .mission-strip{
+    position:relative; z-index:1;
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:10px; font-family:var(--font-heading);
+    color:var(--violet-soft); font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
+    margin-bottom:16px;
+    padding:6px 14px; border-radius:20px;
+    background:rgba(104,64,255,0.08); border:1px solid rgba(104,64,255,0.22);
   }
+  .mission-strip .ms-dot{width:5px; height:5px; border-radius:50%; background:var(--violet); flex-shrink:0; animation:pulse 1.8s ease-in-out infinite;}
+  .mission-strip .ms-sep{opacity:0.35;}
+  .sub{position:relative; z-index:1; font-size:12.5px; color:var(--ink-faint); margin-bottom:14px;}
+  .reset{position:relative; z-index:1; margin-bottom:18px; font-size:11.5px; color:var(--ink-faint); background:transparent; border:1px solid var(--edge); border-radius:8px; padding:9px 16px; cursor:pointer; transition:.15s; font-family:var(--font-heading); font-weight:600; letter-spacing:.3px;}
+  .reset:hover{border-color:var(--violet-bright); color:var(--ink);}
+  /* Subtle vignette at viewport edges — frame the atlas ground */
+  body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgba(4,5,22,0.55) 100%);}
+  /* SVG product icons in order cards */
+  .opimg svg{display:block;}
+
+  /* phone — device chassis; the screen inside is glass panels over a space wallpaper */
+  .phone-frame{
+    position:relative; z-index:1; width:410px; max-width:100%;
+    background:#000;
+    border-radius:38px; padding:12px;
+    box-shadow:0 34px 90px -28px rgba(104,64,255,.8), 0 0 0 1px rgba(255,255,255,.08);
+  }
+
+  /* phone — the screen; no nebula gradients, pure atlas navy */
+  .phone{
+    border-radius:28px; overflow:hidden; height:680px;
+    display:flex; flex-direction:column; position:relative;
+    background:var(--page);
+  }
+
+  /* ── Outcome ambient glow — spectral class colors bloom on decision ── */
+  .outcome-glow{
+    position:absolute; inset:0; pointer-events:none; z-index:0;
+    opacity:0; transition:opacity 1s ease;
+  }
+  .outcome-glow.approved{
+    opacity:1;
+    background:radial-gradient(75% 55% at 50% 105%, rgba(0,200,232,.32) 0%, transparent 70%); /* A-type cyan */
+  }
+  .outcome-glow.declined{
+    opacity:1;
+    background:radial-gradient(75% 55% at 50% 105%, rgba(255,75,106,.28) 0%, transparent 70%); /* M-type rose */
+  }
+  .outcome-glow.flagged{
+    opacity:1;
+    background:radial-gradient(75% 55% at 50% 105%, rgba(245,160,32,.22) 0%, transparent 70%); /* K-type amber */
+  }
+
+  /* ── Ripple transition overlay ── */
+  .ripple-out{
+    position:absolute; border-radius:50%; pointer-events:none; z-index:100;
+    transform:translate(-50%,-50%) scale(0);
+    background:radial-gradient(circle, rgba(104,64,255,.45) 0%, rgba(104,64,255,.1) 60%, transparent 100%);
+    transition:transform .5s cubic-bezier(.2,.8,.2,1), opacity .3s .32s;
+    opacity:1;
+  }
+  .ripple-out.expanding{ transform:translate(-50%,-50%) scale(1); opacity:0; }
+
   .notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:135px; height:26px; background:#000; border-radius:0 0 17px 17px; z-index:5;}
   .app-top{
     padding:22px 18px 14px; display:flex; align-items:center; gap:11px;
-    background:var(--glass); backdrop-filter:var(--glass-blur) saturate(160%); -webkit-backdrop-filter:var(--glass-blur) saturate(160%);
+    background:rgba(8,10,22,0.55); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
     border-bottom:1px solid var(--glass-border);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);
+    position:relative; z-index:1;
   }
-  .app-top .logo{width:30px; height:30px; border-width:2px;} .app-top .logo::before{width:12px; height:12px; box-shadow:-8px 0 0 -2px var(--violet-bright),8px 0 0 -2px var(--violet-bright);}
+  .app-top .logo{width:30px; height:30px; border-width:2px;}
   .app-top .at{font-family:var(--font-heading); font-weight:700; letter-spacing:1px; font-size:13px;}
   .app-top .grow{flex:1;}
   .app-top .gph{width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#3a2d6b,#5a3fa0); display:grid; place-items:center; font-weight:800; font-size:12px;}
-  .app-body{flex:1; overflow-y:auto; padding:16px;}
+  .app-body{flex:1; overflow-y:auto; padding:16px; position:relative; z-index:1;}
   .app-body::-webkit-scrollbar{width:5px;} .app-body::-webkit-scrollbar-thumb{background:var(--edge); border-radius:6px;}
 
   .greeting{font-family:var(--font-heading); font-size:15.5px; font-weight:600;} .greeting small{display:block; font-family:var(--font-body); font-size:12px; color:var(--ink-faint); font-weight:500; margin-top:2px;}
   .tabs{display:flex; gap:8px; margin:14px 0;}
   .tab{
-    flex:1; text-align:center; font-size:12px; font-weight:700; padding:8px; border-radius:9px; color:var(--ink-dim);
-    background:var(--glass); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid var(--glass-border);
+    flex:1; text-align:center; font-size:12px; font-weight:600; padding:10px 8px; border-radius:9px; color:var(--ink-faint);
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.07);
+    opacity:.35; pointer-events:none; user-select:none;
   }
-  .tab.active{background:var(--violet); color:#fff; border-color:transparent; font-weight:600;}
+  .tab.active{background:var(--violet); color:#fff; border-color:transparent; opacity:1; pointer-events:auto;}
 
   .wcard{
     background:var(--glass); color:var(--ink); border-radius:13px; padding:14px; margin-bottom:12px;
-    backdrop-filter:var(--glass-blur) saturate(180%); -webkit-backdrop-filter:var(--glass-blur) saturate(180%);
     border:1px solid var(--glass-border);
-    box-shadow:0 8px 22px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.14);
+    box-shadow:0 2px 14px -6px rgba(0,0,0,0.45);
   }
   .oprod{display:flex; gap:12px;}
-  .opimg{width:64px; height:64px; border-radius:9px; display:grid; place-items:center; font-size:30px; flex-shrink:0; background:rgba(124,111,255,0.18); border:1px solid rgba(124,111,255,0.3);}
-  .opn{font-size:14px; font-weight:600; line-height:1.3;}
+  .opimg{width:64px; height:64px; border-radius:9px; display:grid; place-items:center; flex-shrink:0; background:rgba(104,64,255,0.14); border:1px solid rgba(104,64,255,0.28); color:var(--violet-soft);}
+  .opn{font-size:14px; font-weight:600; line-height:1.3; font-family:var(--font-heading);}
   .opm{font-size:11.5px; color:var(--ink-faint); margin-top:3px;}
   .opp{font-size:14px; font-weight:700; margin-top:4px;}
-  .ostat{font-size:11px; color:var(--mint); font-weight:700; margin-top:6px;}
-  .ret-btn{margin-top:12px; width:100%; padding:11px; border:0; border-radius:10px; background:var(--amber); font-family:var(--font-heading); font-weight:600; font-size:13.5px; cursor:pointer; color:#1a1206; transition:background .15s, transform .15s;}
+  .ostat{font-size:11px; color:var(--cyan); font-weight:700; margin-top:6px;}
+  .ret-btn{margin-top:12px; width:100%; padding:13px; border:0; border-radius:10px; background:var(--amber); font-family:var(--font-heading); font-weight:600; font-size:13.5px; cursor:pointer; color:#1a1206; transition:background .15s, transform .15s;}
   .ret-btn:hover{background:#ffb84d;}
   .ret-btn:active{transform:scale(0.98);}
   .ret-btn:disabled{background:rgba(255,255,255,0.1); border-color:var(--glass-border); color:var(--ink-faint); cursor:not-allowed;}
   .pill{display:inline-block; font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:20px; margin-top:6px; border:1px solid transparent;}
-  .pill.done{background:rgba(0,212,170,0.15); color:var(--mint); border-color:rgba(0,212,170,0.35);}
-  .pill.warn{background:rgba(245,166,35,0.15); color:var(--amber); border-color:rgba(245,166,35,0.35);}
+  .pill.done{background:rgba(0,200,232,0.12); color:var(--cyan); border-color:rgba(0,200,232,0.3);}   /* A-type cyan — returned/done */
+  .pill.warn{background:rgba(245,160,32,0.12); color:var(--amber); border-color:rgba(245,160,32,0.3);} /* K-type amber — outside window */
 
-  .step-label{font-size:12px; color:var(--ink-faint); font-weight:700; margin-bottom:10px;}
+  .step-label{font-size:12px; color:var(--ink-faint); font-weight:700; margin-bottom:10px; display:block; font-family:var(--font-heading); letter-spacing:.3px;}
   .back-link{font-size:12.5px; color:var(--violet-soft); cursor:pointer; margin-bottom:12px; display:inline-block; font-weight:600;}
   .reason{
-    display:flex; align-items:center; gap:10px; padding:12px 13px; border-radius:10px; margin-bottom:9px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; padding:14px 13px; border-radius:10px; margin-bottom:9px; cursor:pointer;
     font-size:13.5px; font-weight:600; color:var(--ink); transition:.15s;
-    background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid var(--glass-border);
+    background:var(--glass); border:1px solid var(--glass-border);
   }
   .reason:hover{border-color:var(--violet-bright); background:var(--glass-strong);}
-  .reason.sel{border-color:var(--violet-bright); background:rgba(124,111,255,0.2); box-shadow:0 0 0 2px rgba(124,111,255,0.25);}
+  .reason.sel{border-color:var(--violet-bright); background:rgba(104,64,255,0.2); box-shadow:0 0 0 2px rgba(104,64,255,0.25);}
   .reason .rdot{width:17px; height:17px; border-radius:50%; border:2px solid rgba(255,255,255,0.35); flex-shrink:0;}
   .reason.sel .rdot{border-color:var(--violet-bright); background:var(--violet-bright); box-shadow:inset 0 0 0 3px rgba(255,255,255,0.9);}
 
   .desc-field{
     width:100%; min-height:100px; border-radius:10px; padding:12px; font-size:13px; font-family:inherit; resize:none;
     color:var(--ink); line-height:1.5;
-    background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid var(--glass-border);
+    background:var(--glass); border:1px solid var(--glass-border);
   }
   .desc-field::placeholder{color:var(--ink-faint);}
-  .desc-field:focus{outline:none; border-color:var(--violet-bright); box-shadow:0 0 0 3px rgba(124,111,255,0.2);}
-  .submit-btn{margin-top:12px; width:100%; padding:13px; border:0; border-radius:10px; background:var(--violet); color:#fff; font-family:var(--font-heading); font-weight:600; font-size:14px; cursor:pointer; transition:background .15s, transform .15s;}
+  .desc-field:focus{outline:none; border-color:var(--violet-bright); box-shadow:0 0 0 3px rgba(104,64,255,0.2);}
+  .submit-btn{margin-top:12px; width:100%; padding:14px; border:0; border-radius:10px; background:var(--violet); color:#fff; font-family:var(--font-heading); font-weight:600; font-size:14px; cursor:pointer; transition:background .15s, transform .15s;}
   .submit-btn:hover:not(:disabled){background:var(--violet-bright);}
   .submit-btn:active:not(:disabled){transform:scale(0.98);}
   .submit-btn:disabled{opacity:.5; cursor:not-allowed;}
 
-  .processing{text-align:center; padding:24px 10px;}
-  .spinner{width:52px; height:52px; margin:0 auto 18px; border-radius:50%; border:4px solid var(--edge); border-top-color:var(--violet-bright); animation:spin 0.9s linear infinite;}
+  /* ── Sci-fi SVG spinner ── */
+  .proc-spinner{width:68px; height:68px; margin:0 auto 20px; display:block;}
+  .arc-a{transform-origin:34px 34px; animation:spin 1.7s cubic-bezier(.5,.1,.5,.9) infinite;}
+  .arc-b{transform-origin:34px 34px; animation:spin 2.6s cubic-bezier(.5,.1,.5,.9) infinite reverse;}
+  .arc-dot{transform-origin:34px 34px; animation:spin 1.7s cubic-bezier(.5,.1,.5,.9) infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  .proc-head{font-size:14.5px; font-weight:700; margin-bottom:16px;}
+
+  .processing{text-align:center; padding:24px 10px;}
+  .proc-head{font-size:14.5px; font-weight:700; margin-bottom:8px; font-family:var(--font-heading);}
   .proc-sub{font-size:11px; color:var(--ink-faint); margin-bottom:16px;}
   .proc-line{font-size:12.5px; color:var(--ink-dim); padding:7px 10px; text-align:left; display:flex; gap:9px; align-items:flex-start; opacity:0; transform:translateY(6px);}
   .proc-line.on{opacity:1; transform:none; transition:.3s;}
   .proc-line .pc{color:var(--violet-soft); font-weight:800; flex-shrink:0;}
   .proc-line b{color:var(--violet-soft);}
   .proc-line.decide{color:var(--amber); font-weight:700;} .proc-line.decide .pc{color:var(--amber);}
-  .proc-line.decide.ok{color:var(--mint); font-weight:700;} .proc-line.decide.ok .pc{color:var(--mint);}
-  .proc-line.decide.bad{color:var(--rose); font-weight:700;} .proc-line.decide.bad .pc{color:var(--rose);}
+  .proc-line.decide.ok{color:var(--cyan); font-weight:700;} .proc-line.decide.ok .pc{color:var(--cyan);}   /* A-type — approved */
+  .proc-line.decide.bad{color:var(--rose); font-weight:700;} .proc-line.decide.bad .pc{color:var(--rose);} /* M-type — declined */
 
   .confirm-msg{
     color:var(--ink); border-radius:13px; padding:17px;
-    background:var(--glass); backdrop-filter:var(--glass-blur) saturate(180%); -webkit-backdrop-filter:var(--glass-blur) saturate(180%);
+    background:var(--glass);
     border:1px solid var(--glass-border);
-    box-shadow:0 8px 22px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.14);
+    box-shadow:0 2px 14px -6px rgba(0,0,0,0.4);
   }
-  .confirm-msg .ci{width:46px; height:46px; border-radius:50%; background:rgba(0,212,170,0.15); border:1px solid rgba(0,212,170,0.35); color:var(--mint); display:grid; place-items:center; font-size:23px; margin-bottom:13px;}
-  .confirm-msg.warn .ci{background:rgba(245,166,35,0.15); border-color:rgba(245,166,35,0.35); color:var(--amber);}
-  .confirm-msg.bad .ci{background:rgba(255,84,112,0.15); border-color:rgba(255,84,112,0.35); color:var(--rose);}
+  .confirm-msg .ci{
+    width:50px; height:50px; border-radius:50%;
+    background:rgba(0,200,232,0.10); border:1px solid rgba(0,200,232,0.28);
+    color:var(--cyan); display:grid; place-items:center; margin-bottom:14px;
+    box-shadow:0 0 24px -8px rgba(0,200,232,.45);
+  }
+  .confirm-msg.warn .ci{background:rgba(245,160,32,0.10); border-color:rgba(245,160,32,0.28); color:var(--amber); box-shadow:0 0 24px -8px rgba(245,160,32,.4);}
+  .confirm-msg.bad  .ci{background:rgba(255,75,106,0.10); border-color:rgba(255,75,106,0.28); color:var(--rose); box-shadow:0 0 24px -8px rgba(255,75,106,.4);}
   .confirm-msg .ch{font-family:var(--font-heading); font-size:15.5px; font-weight:600; margin-bottom:9px;}
   .confirm-msg .cb{font-size:13px; color:var(--ink-dim); line-height:1.6;}
   .confirm-msg .cb b{color:var(--ink);}
-  .ai-note{margin-top:13px; padding:12px 13px; border-radius:10px; background:rgba(255,255,255,0.05); font-size:11.5px; color:var(--ink-dim); line-height:1.6; border-left:3px solid var(--violet);}
+  .ai-note{margin-top:13px; padding:12px 13px; border-radius:10px; background:rgba(104,64,255,0.1); font-size:11.5px; color:var(--ink-dim); line-height:1.6; border:1px solid rgba(104,64,255,0.22);}
   .ai-note b{color:var(--ink);}
-  .named{margin-top:13px; padding:12px; border-radius:10px; background:rgba(124,111,255,0.14); border:1px solid rgba(124,111,255,0.25); display:flex; align-items:center; gap:11px;}
+  .named{margin-top:13px; padding:12px; border-radius:10px; background:rgba(104,64,255,0.14); border:1px solid rgba(104,64,255,0.25); display:flex; align-items:center; gap:11px;}
   .named .nph{width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--violet),var(--violet-bright)); display:grid; place-items:center; font-weight:800; color:#fff; font-size:14px; flex-shrink:0;}
   .named .nn{font-size:13.5px; font-weight:700; color:var(--ink);} .named .nt{font-size:11.5px; color:var(--ink-faint);}
-  .live-tag{margin-top:14px; text-align:center; font-size:11.5px; color:var(--mint); font-weight:700; line-height:1.5;}
+  .live-tag{margin-top:14px; text-align:center; font-size:11.5px; color:var(--violet-soft); font-weight:700; line-height:1.5;}
+  .support-btn{
+    display:block; margin-top:14px; padding:13px 16px; width:100%;
+    border:1px solid var(--edge); border-radius:10px; background:transparent;
+    color:var(--ink-faint); font-family:var(--font-heading); font-weight:600; font-size:13px;
+    text-align:center; text-decoration:none; cursor:pointer;
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .support-btn:hover{border-color:var(--violet-bright); color:var(--ink); background:rgba(104,64,255,0.07);}
+  .support-btn:focus-visible{outline:2px solid var(--violet-bright); outline-offset:2px;}
+  .support-btn-sub{display:block; font-size:11px; font-weight:400; font-family:var(--font-body); color:inherit; margin-top:3px; opacity:0.65;}
 
   .fade{display:none;} .fade.show{display:block; animation:fadeIn .35s ease;}
   @keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;}
+
+  @media (prefers-reduced-motion: reduce){
+    .arc-a,.arc-b,.arc-dot{animation:none;}
+    .skel{animation:none; opacity:0.7;}
+    .fade.show{animation:none;}
+    .proc-line.on{transition:none;}
+    .ret-btn,.submit-btn,.reset,.reason{transition:none;}
+    .outcome-glow{transition:none;}
+    .mission-strip .ms-dot{animation:none;}
+  }
 
   .empty-state{text-align:center; padding:40px 14px; color:var(--ink-faint); font-size:13px; line-height:1.6;}
-  .err-box{background:#2a1420; border:1px solid var(--rose); color:#ffd0d8; border-radius:10px; padding:13px; font-size:12px; line-height:1.6;}
-  .err-box code{background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:5px;}
+  .err-box{background:#180818; border:1px solid rgba(255,75,106,0.5); color:#FFCCD8; border-radius:10px; padding:13px; font-size:12px; line-height:1.6;}
+  .err-box code{background:rgba(255,255,255,0.07); padding:2px 5px; border-radius:5px;}
   .skel{background:var(--panel-2); border-radius:13px; height:96px; margin-bottom:12px; animation:pulse 1.3s ease-in-out infinite;}
   @keyframes pulse{0%,100%{opacity:.5;} 50%{opacity:.9;}}
 </style>
 </head>
 <body>
-<div class="stars"></div>
+<canvas id="starfield" aria-hidden="true"></canvas>
 
 <div class="head">
-  <div class="logo"></div>
-  <div class="bn">COSMIC MART<small>AGENTIC RETURNS · CUSTOMER APP</small></div>
+  <div class="logo" aria-hidden="true">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 2.5c2.8 1.6 4.5 4.6 4.5 8.5 0 2-1 4.5-2.2 6l-2.3 2.5-2.3-2.5C8.5 15.5 7.5 13 7.5 11c0-3.9 1.7-6.9 4.5-8.5Z"/>
+      <circle cx="12" cy="10.5" r="1.8"/>
+      <path d="M8.3 16.8 6 20.5l4-1.3M15.7 16.8 18 20.5l-4-1.3"/>
+    </svg>
+  </div>
+  <div class="bn">COSMIC MART</div>
 </div>
-<div class="sub" id="subline">Loading account… · a return that reasons, not just processes</div>
-<button class="reset" onclick="location.reload()">↺ Reset demo</button>
+<div class="sub" id="subline">Loading your account…</div>
+<div class="mission-strip" aria-label="System status: agent network active">
+  <div class="ms-dot" aria-hidden="true"></div>
+  <span>Agent Network Active</span>
+  <span class="ms-sep" aria-hidden="true">·</span>
+  <span>Real-Time Decisions</span>
+</div>
+<button class="reset" onclick="location.reload()">↺ New session</button>
 
-<div class="phone-frame">
-  <div class="phone">
+<div class="phone-frame" id="phoneFrame">
+  <div class="phone" id="phoneScreen">
+    <!-- Outcome ambient glow — fades in on the wallpaper after AI decision -->
+    <div class="outcome-glow" id="outcomeGlow"></div>
     <div class="notch"></div>
     <div class="app-top">
-      <div class="logo"></div>
+      <div class="logo" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2.5c2.8 1.6 4.5 4.6 4.5 8.5 0 2-1 4.5-2.2 6l-2.3 2.5-2.3-2.5C8.5 15.5 7.5 13 7.5 11c0-3.9 1.7-6.9 4.5-8.5Z"/>
+          <circle cx="12" cy="10.5" r="1.8"/>
+          <path d="M8.3 16.8 6 20.5l4-1.3M15.7 16.8 18 20.5l-4-1.3"/>
+        </svg>
+      </div>
       <div class="at">COSMIC MART</div>
       <div class="grow"></div>
-      <div class="gph" id="avatarInitials">··</div>
+      <div class="gph" id="avatarInitials" aria-hidden="true">··</div>
     </div>
     <div class="app-body" id="appBody">
 
       <!-- HOME -->
       <div class="fade show" id="m-home">
-        <div class="greeting" id="greeting">Hi there 👋<small>Loading your account…</small></div>
+        <div class="greeting" id="greeting"><small style="font-size:12px; color:var(--ink-faint); font-weight:400;">Loading account…</small></div>
         <div class="tabs"><div class="tab">Home</div><div class="tab active">Orders</div><div class="tab">Account</div></div>
         <div class="step-label">RECENT ORDERS</div>
         <div id="orderList">
@@ -210,25 +318,37 @@
 
       <!-- REASON -->
       <div class="fade" id="m-reason">
-        <span class="back-link" onclick="go('m-home')">← Back</span>
+        <span class="back-link" role="button" tabindex="0" onclick="go('m-home')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('m-home')}">← Back</span>
         <div class="step-label" id="reasonItem">STEP 1 OF 2 · Why are you returning this?</div>
         <div id="reasonList"></div>
       </div>
 
       <!-- DESCRIBE -->
       <div class="fade" id="m-desc">
-        <span class="back-link" onclick="go('m-reason')">← Back</span>
-        <div class="step-label">STEP 2 OF 2 · Tell us what happened</div>
-        <textarea class="desc-field" id="descText" placeholder="Add a few details — this goes straight to the return policy agent…"></textarea>
-        <button class="submit-btn" id="submitBtn" onclick="submitReturn()">Submit return request</button>
+        <span class="back-link" role="button" tabindex="0" onclick="go('m-reason')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('m-reason')}">← Back</span>
+        <label class="step-label" for="descText">STEP 2 OF 2 · Describe what happened</label>
+        <textarea class="desc-field" id="descText" placeholder="A few details help us resolve your return faster."></textarea>
+        <button class="submit-btn" id="submitBtn" onclick="submitReturn()">Submit return</button>
       </div>
 
       <!-- PROCESSING -->
       <div class="fade" id="m-proc">
         <div class="processing">
-          <div class="spinner"></div>
-          <div class="proc-head">The policy agent is reviewing your request</div>
-          <div class="proc-sub">This calls a real AI policy check — it can take a few seconds.</div>
+          <!-- Dual-ring sci-fi spinner -->
+          <svg class="proc-spinner" viewBox="0 0 68 68" fill="none" aria-hidden="true">
+            <!-- outer static ring -->
+            <circle cx="34" cy="34" r="30" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+            <!-- primary rotating arc -->
+            <circle cx="34" cy="34" r="30" stroke="var(--violet-bright)" stroke-width="2.5"
+                    stroke-dasharray="58 130" stroke-linecap="round" class="arc-a"/>
+            <!-- secondary counter-rotating arc -->
+            <circle cx="34" cy="34" r="21" stroke="rgba(0,200,255,0.45)" stroke-width="1.5"
+                    stroke-dasharray="22 110" stroke-linecap="round" class="arc-b"/>
+            <!-- orbiting dot -->
+            <circle cx="34" cy="4" r="3" fill="var(--violet-soft)" class="arc-dot"/>
+          </svg>
+          <div class="proc-head">Reviewing your return…</div>
+          <div class="proc-sub">Usually a few seconds.</div>
           <div id="procLines"></div>
         </div>
       </div>
@@ -236,34 +356,45 @@
       <!-- SUCCESS (approved) -->
       <div class="fade" id="m-success">
         <div class="confirm-msg">
-          <div class="ci">✓</div>
+          <div class="ci" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="sr-only">Return approved</span>
           <div class="ch">Return approved</div>
           <div class="cb" id="successBody"></div>
           <div class="ai-note" id="successNote"></div>
         </div>
-        <div class="live-tag" style="color:var(--violet-soft);">Evaluated end-to-end by the return policy agent — no queue, no ticket number to wait on.</div>
       </div>
 
       <!-- CONFIRM (flagged — routed to a human team) -->
       <div class="fade" id="m-confirm">
         <div class="confirm-msg warn">
-          <div class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></svg></div>
+          <div class="ci">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></svg>
+          </div>
           <div class="ch" id="confirmHead">Your return needs a closer look</div>
           <div class="cb" id="confirmBody"></div>
           <div class="ai-note" id="confirmNote"></div>
           <div class="named" id="confirmNamed"></div>
         </div>
-        <div class="live-tag">Routed by the agent, not rejected — a specialist will follow up.</div>
+        <div class="live-tag">Not a rejection. A specialist on our team has your case and will reach out.</div>
       </div>
 
       <!-- DECLINED -->
       <div class="fade" id="m-declined">
         <div class="confirm-msg bad">
-          <div class="ci">✕</div>
-          <div class="ch">This return can't be approved</div>
+          <div class="ci" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <span class="sr-only">Return declined</span>
+          <div class="ch">We can't approve this return</div>
           <div class="cb" id="declinedBody"></div>
           <div class="ai-note" id="declinedNote"></div>
         </div>
+        <a href="mailto:support@cosmicmart.com" class="support-btn">
+          Contact customer support
+          <span class="support-btn-sub">if you think this is a mistake</span>
+        </a>
       </div>
 
     </div>
@@ -282,19 +413,25 @@
 const API = 'http://localhost:8000';
 const CUSTOMER_ID = 1;
 
+// Product category icons — authored SVG, consistent 1.5px stroke, rounded caps/joins
 const ICONS = {
-  audio:'🔊', eyewear:'🥽', tablet:'📱', camera:'📷',
-  lighting:'💡', wearable:'⌚', accessory:'🔌',
+  audio:     `<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`,
+  eyewear:   `<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="13" r="3.5"/><circle cx="17.5" cy="13" r="3.5"/><path d="M10 13h4"/><path d="M3 10.5 1.5 12"/><path d="M21 10.5l1.5 1.5"/></svg>`,
+  tablet:    `<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/></svg>`,
+  camera:    `<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+  lighting:  `<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14z"/></svg>`,
+  wearable:  `<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="6" width="14" height="12" rx="2"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M8 18v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2"/><polyline points="12 10 12 12 14 12"/></svg>`,
+  accessory: `<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16a4 4 0 0 1-4 4H6a4 4 0 0 1 0-8h1"/><path d="M6 8a4 4 0 0 1 4-4h8a4 4 0 0 1 0 8h-1"/></svg>`,
 };
 const REASONS = [
   'Changed my mind', 'Ordered by mistake', 'Better price elsewhere', 'No longer needed',
   'Does not match description', 'Compatibility issue', 'Damaged on arrival', 'Other',
 ];
 const WAIT_LINES = [
-  'Reading your order and account history…',
-  "Checking against Cosmic Mart's return policy…",
-  'Cross-referencing recent reports for this product…',
-  'Consulting the return policy agent…',
+  'Pulling your order history…',
+  'Checking return eligibility…',
+  'Reviewing prior return history…',
+  'Making a decision…',
 ];
 
 let orders = [];
@@ -302,10 +439,52 @@ let customer = null;
 let currentItem = null;
 let lastResult = null;
 
+/* ── Screen transitions ── */
 function go(id){
   document.querySelectorAll('#appBody .fade').forEach(el=>el.classList.remove('show'));
-  document.getElementById(id).classList.add('show');
+  const target = document.getElementById(id);
+  target.classList.add('show');
   document.getElementById('appBody').scrollTop = 0;
+  // Move focus to first interactive element so keyboard/screen-reader users
+  // know the view has changed.
+  const focusable = target.querySelector('button, [role="button"], [tabindex="0"], textarea');
+  if(focusable) setTimeout(()=>focusable.focus({preventScroll:true}), 50);
+}
+
+/* ── Ripple transition — ink-wash circle expands from the trigger button ── */
+function rippleGo(fromEl, targetId){
+  const phone = document.getElementById('phoneScreen');
+  const phoneRect = phone.getBoundingClientRect();
+  const fromRect = fromEl.getBoundingClientRect();
+  const cx = fromRect.left - phoneRect.left + fromRect.width / 2;
+  const cy = fromRect.top  - phoneRect.top  + fromRect.height / 2;
+  const size = Math.hypot(phoneRect.width, phoneRect.height) * 2.4;
+
+  const rip = document.createElement('div');
+  rip.className = 'ripple-out';
+  rip.style.left   = cx + 'px';
+  rip.style.top    = cy + 'px';
+  rip.style.width  = size + 'px';
+  rip.style.height = size + 'px';
+  phone.appendChild(rip);
+
+  // Double-rAF: ensure the element is painted at scale(0) before we expand it
+  requestAnimationFrame(()=>requestAnimationFrame(()=>rip.classList.add('expanding')));
+
+  setTimeout(()=>{
+    go(targetId);
+    setTimeout(()=>rip.remove(), 350);
+  }, 360);
+}
+
+/* ── Outcome glow — ambient color floods the phone wallpaper on decision ── */
+function setOutcomeGlow(decision){
+  const glow = document.getElementById('outcomeGlow');
+  if(!glow) return;
+  glow.className = 'outcome-glow'; // reset
+  if(decision === 'approved') glow.classList.add('approved');
+  else if(decision === 'declined') glow.classList.add('declined');
+  else glow.classList.add('flagged');
 }
 
 function initials(name){
@@ -320,7 +499,7 @@ async function loadHome(){
     ]);
     if(!profileRes.ok || !ordersRes.ok) throw new Error('backend responded with an error');
     customer = await profileRes.json();
-    orders = await ordersRes.json();
+    orders   = await ordersRes.json();
     renderHome();
   }catch(err){
     renderError(err);
@@ -330,10 +509,14 @@ async function loadHome(){
 function renderHome(){
   const tierBit = customer.loyalty_tier ? ` · ${customer.loyalty_tier} member` : '';
   document.getElementById('subline').textContent =
-    `${customer.name} · Cosmic Mart${tierBit} · a return that reasons, not just processes`;
+    `${customer.name} · Cosmic Mart${tierBit}`;
   document.getElementById('avatarInitials').textContent = initials(customer.name);
   document.getElementById('greeting').innerHTML =
-    `Hi ${customer.name.split(' ')[0]} 👋<small>${customer.market}${tierBit}</small>`;
+    `Welcome back, ${customer.name.split(' ')[0]}<small>${customer.market}${tierBit}</small>`;
+
+  // Reset any outcome glow from a previous return
+  const glow = document.getElementById('outcomeGlow');
+  if(glow) glow.className = 'outcome-glow';
 
   const list = document.getElementById('orderList');
   list.innerHTML = '';
@@ -345,20 +528,20 @@ function renderHome(){
     const card = document.createElement('div');
     card.className = 'wcard';
     const icon = ICONS[item.category] || '🔌';
-    let statusLine = `● Delivered · Order #CM-${90000 + item.order_id}`;
+    const statusLine = `● Delivered · Order #CM-${90000 + item.order_id}`;
     let btn;
     if(item.already_returned){
       btn = `<span class="pill done">Return submitted</span>`;
     } else {
-      const warn = item.eligible ? '' : `<div><span class="pill warn">Past our 30-day policy window — the agent will still review it</span></div>`;
-      btn = `${warn}<button class="ret-btn" onclick='startReturn(${item.order_id}, ${JSON.stringify(item.product_name)})'>Return item</button>`;
+      const warn = item.eligible ? '' : `<div><span class="pill warn">Outside 30-day return window</span></div>`;
+      btn = `${warn}<button class="ret-btn" onclick='startReturn(${item.order_id}, ${JSON.stringify(item.product_name)}, this)'>Return item</button>`;
     }
     card.innerHTML = `
       <div class="oprod">
         <div class="opimg">${icon}</div>
         <div>
           <div class="opn">${item.product_name}</div>
-          <div class="opm">${item.category} · Delivered ${item.days_ago} day(s) ago</div>
+          <div class="opm">${item.category} · Delivered ${item.days_ago} ${item.days_ago === 1 ? 'day' : 'days'} ago</div>
           <div class="opp">$${item.total_price.toFixed(2)}</div>
           <div class="ostat">${statusLine}</div>
         </div>
@@ -378,7 +561,7 @@ function renderError(err){
     </div>`;
 }
 
-function startReturn(orderId, productName){
+function startReturn(orderId, productName, btnEl){
   currentItem = orders.find(o => o.order_id === orderId && o.product_name === productName);
   if(!currentItem) return;
   document.getElementById('reasonItem').textContent =
@@ -388,11 +571,16 @@ function startReturn(orderId, productName){
   REASONS.forEach(r=>{
     const d = document.createElement('div');
     d.className = 'reason';
+    d.setAttribute('role', 'button');
+    d.setAttribute('tabindex', '0');
     d.innerHTML = '<div class="rdot"></div>'+r;
-    d.onclick = ()=>selReason(d, r);
+    d.onclick   = ()=>selReason(d, r);
+    d.onkeydown = e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selReason(d, r); } };
     list.appendChild(d);
   });
-  go('m-reason');
+  // Ripple from the "Return item" button if available, otherwise plain switch
+  if(btnEl) rippleGo(btnEl, 'm-reason');
+  else go('m-reason');
 }
 
 let selectedReason = null;
@@ -406,19 +594,29 @@ function selReason(el, reason){
 
 function addProcLine(text, cls){
   const box = document.getElementById('procLines');
-  const d = document.createElement('div');
+  const d   = document.createElement('div');
   d.className = 'proc-line on' + (cls ? ' '+cls : '');
-  const icon = cls === 'decide ok' ? '✓' : cls === 'decide bad' ? '✕' : cls === 'decide' ? '▶' : '…';
-  d.innerHTML = `<span class="pc">${icon}</span><span>${text}</span>`;
+  // Authored SVG icons — consistent stroke, no Unicode stand-ins
+  let icon;
+  if(cls === 'decide ok'){
+    icon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  } else if(cls === 'decide bad'){
+    icon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+  } else if(cls === 'decide'){
+    icon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
+  } else {
+    icon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><circle cx="12" cy="16.5" r="1" fill="currentColor" stroke="none"/></svg>`;
+  }
+  d.innerHTML = `<span class="pc" style="display:flex;align-items:center;">${icon}</span><span>${text}</span>`;
   box.appendChild(d);
   return d;
 }
 
 function decisionLabel(decision){
-  if(decision === 'approved') return { text: 'Decision: approve automatically', cls: 'decide ok' };
-  if(decision === 'flagged') return { text: 'Decision: route to a specialist team for review', cls: 'decide' };
-  if(decision === 'declined') return { text: 'Decision: decline per policy', cls: 'decide bad' };
-  return { text: 'Decision: escalate — review agent unavailable', cls: 'decide' };
+  if(decision === 'approved') return { text:'Approved — refund on its way', cls:'decide ok' };
+  if(decision === 'flagged')  return { text:'Routing to a specialist…', cls:'decide' };
+  if(decision === 'declined') return { text:'Not eligible under current policy', cls:'decide bad' };
+  return { text:'Routing to a specialist…', cls:'decide' };
 }
 
 async function submitReturn(){
@@ -440,12 +638,12 @@ async function submitReturn(){
   try{
     const res = await fetch(`${API}/api/customer/return`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        customer_id: CUSTOMER_ID,
-        order_id: currentItem.order_id,
+        customer_id:  CUSTOMER_ID,
+        order_id:     currentItem.order_id,
         product_name: currentItem.product_name,
-        reason: selectedReason,
+        reason:       selectedReason,
         description,
       }),
     });
@@ -471,39 +669,100 @@ function showOutcome(result){
   const item = orders.find(o => o.order_id === result.order_id && o.product_name === result.product);
   if(item) item.already_returned = true;
 
+  // Bloom the phone wallpaper with the decision color
+  setOutcomeGlow(result.decision);
+
   if(result.decision === 'approved'){
     document.getElementById('successBody').innerHTML =
-      `Your return for the <b>${result.product}</b> is all set. <b>$${result.refund_amount.toFixed(2)}</b> will be refunded.`;
-    document.getElementById('successNote').innerHTML = `<b>Agent note:</b> ${result.ai_note}`;
+      `<b>$${result.refund_amount.toFixed(2)}</b> will be credited to your original payment method for the <b>${result.product}</b>.`;
+    document.getElementById('successNote').innerHTML = `<b>Agent's note:</b> ${result.ai_note}`;
     go('m-success');
   } else if(result.decision === 'flagged'){
     const team = result.escalation_team || result.assigned_to || 'a specialist team';
     document.getElementById('confirmHead').textContent = 'Your return needs a closer look';
     document.getElementById('confirmBody').innerHTML =
-      `Hi ${customer.name.split(' ')[0]}, before we can refund the <b>${result.product}</b>, this has been routed to ` +
-      `<b>${team}</b> for review. This is now <b>return #${result.return_id}</b> — a specialist will follow up.`;
-    document.getElementById('confirmNote').innerHTML = `<b>Agent note:</b> ${result.ai_note}`;
+      `<b>${team}</b> is reviewing your <b>${result.product}</b> return. A specialist will follow up. Ref <b>#${result.return_id}</b>.`;
+    document.getElementById('confirmNote').innerHTML = `<b>Agent's note:</b> ${result.ai_note}`;
     document.getElementById('confirmNamed').innerHTML =
       `<div class="nph">${initials(team)}</div><div><div class="nn">${team}</div><div class="nt">Cosmic Mart Return Review</div></div>`;
     go('m-confirm');
   } else if(result.decision === 'declined'){
     document.getElementById('declinedBody').innerHTML =
-      `We can't approve the return for your <b>${result.product}</b> as submitted.`;
+      `Your <b>${result.product}</b> didn't meet the return criteria.`;
     document.getElementById('declinedNote').innerHTML = `<b>Why:</b> ${result.ai_note}`;
     go('m-declined');
   } else {
-    // agent unavailable — degrade to the same "needs a closer look" screen, no chat
+    // Agent unavailable — degrade to the "needs a closer look" screen
     document.getElementById('confirmHead').textContent = "We couldn't finish reviewing this automatically";
     document.getElementById('confirmBody').innerHTML =
-      `Hi ${customer.name.split(' ')[0]}, the review agent didn't respond in time for the <b>${result.product}</b> return. ` +
-      `A specialist will follow up on <b>return #${result.return_id}</b>.`;
-    document.getElementById('confirmNote').innerHTML = `<b>Agent note:</b> ${result.ai_note}`;
+      `The automatic review of your <b>${result.product}</b> return didn't complete. A specialist will pick it up. Ref <b>#${result.return_id}</b>.`;
+    document.getElementById('confirmNote').innerHTML = `<b>Agent's note:</b> ${result.ai_note}`;
     document.getElementById('confirmNamed').innerHTML = '';
     go('m-confirm');
   }
 }
 
 loadHome();
+
+/* ── Canvas starfield — 180 twinkling stars; respects prefers-reduced-motion ── */
+(function initStarfield(){
+  const canvas = document.getElementById('starfield');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  // Star colors by spectral class — O/B (blue-white), A (white), F (yellow-white), G/K (warm), M (red)
+  const COLORS = ['#ffffff','#E8F0FF','#A0C8FF','#AADCFF','#FFD080','#FF9090'];
+  let stars = [], W = 0, H = 0, rafId;
+
+  function resize(){
+    W = canvas.width  = canvas.offsetWidth  || window.innerWidth;
+    H = canvas.height = canvas.offsetHeight || window.innerHeight;
+  }
+
+  function mkStar(){
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 0.9 + 0.2,
+      a: Math.random() * 0.8 + 0.1,
+      speed: (Math.random() * 0.005 + 0.001) * (Math.random() < .5 ? 1 : -1),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    };
+  }
+
+  function init(){
+    resize();
+    stars = Array.from({length:180}, mkStar);
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    for(const s of stars){
+      s.a += s.speed;
+      if(s.a > 0.92){ s.a = 0.92; s.speed = -Math.abs(s.speed); }
+      if(s.a < 0.05){ s.a = 0.05; s.speed =  Math.abs(s.speed); }
+      ctx.globalAlpha = s.a;
+      ctx.fillStyle   = s.color;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    rafId = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', ()=>{ resize(); });
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  init();
+  if(prefersReduced){
+    // Single static render; no animation loop
+    for(const s of stars){ s.a = 0.5; }
+    draw();
+    cancelAnimationFrame(rafId);
+  } else {
+    draw();
+  }
+})();
 </script>
 </body>
 </html>
